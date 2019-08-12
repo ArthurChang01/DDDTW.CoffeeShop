@@ -5,7 +5,7 @@ using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications
 {
-    public class InboundSpec : Specification<Models.Inventory>
+    internal class InboundSpec : Specification<Models.Inventory>
     {
         public InboundSpec(Models.Inventory inventory, int amount)
         {

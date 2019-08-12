@@ -5,7 +5,7 @@ namespace DDDTW.CoffeeShop.CommonLib.Interfaces
     public interface IPolicy<T>
         where T : IAggregateRoot
     {
-        bool IsSatisfy(T aggregateRoot);
+        bool IsValid();
 
         Exception GetWrapperException { get; }
     }

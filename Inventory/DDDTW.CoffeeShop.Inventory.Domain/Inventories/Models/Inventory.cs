@@ -4,6 +4,7 @@ using System.Linq;
 using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Exceptions;
+using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Policies;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
@@ -30,6 +31,11 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             this.constraints = ieConstraints as List<InventoryConstraint> ??
                                ieConstraints?.ToList() ??
                                new List<InventoryConstraint>();
+            new InventoryPolicy(this);
+
+            var policy = new InventoryPolicy(this);
+            if (policy.IsValid() == false)
+                throw policy.GetWrapperException;
         }
 
         #endregion Constructors

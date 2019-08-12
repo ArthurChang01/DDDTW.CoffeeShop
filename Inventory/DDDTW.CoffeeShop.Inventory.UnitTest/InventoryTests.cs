@@ -36,6 +36,39 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest
         }
 
         [Test]
+        public void When_Create_Inventory_And_Qty_Is_Negative_Digital_Then_Throw_NegativeQtyException()
+        {
+            var param = this.GetParameters();
+
+            Action action = () => new Models.Inventory(param.id, -13, param.item, new[] { param.constraint });
+
+            action.Should().Throw<AggregateException>()
+                .WithInnerException<NegativeQtyException>();
+        }
+
+        [Test]
+        public void When_Create_Inventory_And_Item_Is_Null_Then_Throw_InventoryItemIsNullException()
+        {
+            var param = this.GetParameters();
+
+            Action action = () => new Models.Inventory(param.id, 27, null, new[] { param.constraint });
+
+            action.Should().Throw<AggregateException>()
+                .WithInnerException<InventoryItemIsNullException>();
+        }
+
+        [Test]
+        public void When_Create_Inventory_And_Constraint_Is_Empty_Then_Throw_EmptyConstraintException()
+        {
+            var param = this.GetParameters();
+
+            Action action = () => new Models.Inventory(param.id, 27, param.item, null);
+
+            action.Should().Throw<AggregateException>()
+                .WithInnerException<EmptyConstraintException>();
+        }
+
+        [Test]
         public void Given_Qty_Is_0_When_Inbound_50_Then_Qty_Is_50()
         {
             var param = this.GetParameters(maxQty: 50);
