@@ -6,9 +6,10 @@ using FluentAssertions;
 using NUnit.Framework;
 using Models = DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 
-namespace DDDTW.CoffeeShop.Inventory.UnitTest
+namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
 {
-    public class InventoryTests
+    [Parallelizable(ParallelScope.All)]
+    public class DomainModelTests
     {
         [Test]
         public void CreateInventory()
@@ -76,7 +77,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest
 
             var actual = new Models.Inventory(param.id, 0, param.item, new[] { param.constraint });
             actual.Inbound(50);
-            var evt = (Inbounded)actual.DomainEvents.First();
+            var evt = (Inbounded)actual.DomainEvents.Last();
 
             actual.Qty.Should().Be(expectQty);
             evt.Amount.Should().Be(50);
@@ -113,7 +114,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest
 
             var actual = new Models.Inventory(param.id, 37, param.item, new[] { param.constraint });
             actual.Outbound(2);
-            var evt = (Outbounded)actual.DomainEvents.First();
+            var evt = (Outbounded)actual.DomainEvents.Last();
 
             actual.Qty.Should().Be(expectQty);
             evt.Amount.Should().Be(2);

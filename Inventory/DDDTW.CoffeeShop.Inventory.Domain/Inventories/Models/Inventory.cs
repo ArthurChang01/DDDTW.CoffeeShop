@@ -21,6 +21,8 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             this.Qty = 0;
             this.Item = new InventoryItem();
             this.constraints = new List<InventoryConstraint>();
+
+            this.ApplyEvent(new InventoryCreated(this.Id, this.Qty, this.Item, this.constraints));
         }
 
         public Inventory(InventoryId id, int qty, InventoryItem item, IEnumerable<InventoryConstraint> ieConstraints)
@@ -36,6 +38,8 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             var policy = new InventoryPolicy(this);
             if (policy.IsValid() == false)
                 throw policy.GetWrapperException;
+
+            this.ApplyEvent(new InventoryCreated(this.Id, this.Qty, this.Item, this.constraints));
         }
 
         #endregion Constructors
