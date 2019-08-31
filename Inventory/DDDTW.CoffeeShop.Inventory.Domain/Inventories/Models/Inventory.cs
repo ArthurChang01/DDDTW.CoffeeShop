@@ -21,8 +21,6 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             this.Qty = 0;
             this.Item = new InventoryItem();
             this.constraints = new List<InventoryConstraint>();
-
-            this.ApplyEvent(new InventoryCreated(this.Id, this.Qty, this.Item, this.constraints));
         }
 
         public Inventory(InventoryId id, int qty, InventoryItem item, IEnumerable<InventoryConstraint> ieConstraints)

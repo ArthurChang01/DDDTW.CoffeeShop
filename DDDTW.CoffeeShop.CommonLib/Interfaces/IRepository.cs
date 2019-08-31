@@ -6,8 +6,9 @@ using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 
 namespace DDDTW.CoffeeShop.CommonLib.Interfaces
 {
-    public interface IRepository<T, TId>
+    public interface IRepository<T, in TId>
         where T : IAggregateRoot, IEntity<TId>
+        where TId : IEntityId
     {
         IQueryable<T> All { get; }
 
@@ -23,7 +24,7 @@ namespace DDDTW.CoffeeShop.CommonLib.Interfaces
 
         long Count(Specification<T> by = null);
 
-        void Append(T entity, DomainEvent<TId> @event);
+        void Append(T entity, IEnumerable<IDomainEvent> events);
 
         void Remove(T entity);
     }

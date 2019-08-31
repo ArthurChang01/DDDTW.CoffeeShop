@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
@@ -28,7 +27,7 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.ApplicationServices
             var id = this.repository.GenerateInventoryId();
             var inventory = new Models.Inventory(id, request.Qty, request.Item, request.Constraints);
 
-            this.repository.Save(inventory, inventory.DomainEvents.First());
+            this.repository.Save(inventory, inventory.DomainEvents);
 
             var vm = this.vmTranslator.Translate(inventory);
 

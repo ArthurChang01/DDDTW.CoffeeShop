@@ -13,6 +13,6 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Interfaces
 
         IEnumerable<Models.Inventory> Get(Specification<Models.Inventory> spec, int pageNo = 1, int pageSize = 5);
 
-        void Save(Models.Inventory inventory, IDomainEvent @event);
+        void Save(Models.Inventory inventory, IEnumerable<IDomainEvent> events);
     }
 }

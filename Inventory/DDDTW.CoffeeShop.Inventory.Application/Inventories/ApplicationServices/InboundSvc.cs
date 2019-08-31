@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
@@ -26,7 +25,7 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.ApplicationServices
             var inventory = this.repository.GetBy(id);
             inventory.Inbound(request.Amount);
 
-            this.repository.Save(inventory, inventory.DomainEvents.First());
+            this.repository.Save(inventory, inventory.DomainEvents);
 
             return Task.FromResult(inventory);
         }

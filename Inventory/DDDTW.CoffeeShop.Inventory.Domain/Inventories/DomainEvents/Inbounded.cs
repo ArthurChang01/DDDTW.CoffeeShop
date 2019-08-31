@@ -8,6 +8,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.DomainEvents
     {
         public Inbounded(InventoryId id, int amount, int qty)
         {
+            this.EntityId = id;
             this.Amount = amount;
             this.Qty = qty;
         }

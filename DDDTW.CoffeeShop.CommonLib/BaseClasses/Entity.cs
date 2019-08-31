@@ -3,10 +3,10 @@ using DDDTW.CoffeeShop.CommonLib.Interfaces;
 
 namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 {
-    public abstract class Entity<T> : IEntity<T>, IEqualityComparer<Entity<T>>
-        where T : EntityId
+    public abstract class Entity<TId> : IEntity<TId>, IEqualityComparer<Entity<TId>>
+        where TId : class, IEntityId
     {
-        public T Id { get; protected set; }
+        public TId Id { get; protected set; }
 
         protected readonly List<IDomainEvent> domainEvents = new List<IDomainEvent>();
 
@@ -33,7 +33,7 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 
         public override bool Equals(object obj)
         {
-            var other = obj as Entity<T>;
+            var other = obj as Entity<TId>;
 
             if (other is null) return false;
 
@@ -49,7 +49,7 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
             return (this.GetType(), this.Id).GetHashCode();
         }
 
-        public static bool operator ==(Entity<T> left, Entity<T> right)
+        public static bool operator ==(Entity<TId> left, Entity<TId> right)
         {
             if (left is null && right is null) return true;
 
@@ -58,17 +58,17 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
             return left.Equals(right);
         }
 
-        public static bool operator !=(Entity<T> left, Entity<T> right)
+        public static bool operator !=(Entity<TId> left, Entity<TId> right)
         {
             return !(left == right);
         }
 
-        public bool Equals(Entity<T> left, Entity<T> right)
+        public bool Equals(Entity<TId> left, Entity<TId> right)
         {
             return left == right;
         }
 
-        public int GetHashCode(Entity<T> obj)
+        public int GetHashCode(Entity<TId> obj)
         {
             return obj.GetHashCode();
         }

@@ -18,7 +18,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
     {
         private readonly InventoryId id;
         private readonly Domain.Inventories.Models.Inventory inventory;
-        private readonly IInventoryRepository repository;
+        private readonly IInventoryRepository mockRepository;
 
         public ApplicationTests()
         {
@@ -26,8 +26,8 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
             inventory = new Domain.Inventories.Models.Inventory(id, 10, new InventoryItem(),
                 new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", typeof(int).ToString()) });
 
-            repository = NSubstitute.Substitute.For<IInventoryRepository>();
-            repository.GenerateInventoryId().Returns(id);
+            mockRepository = NSubstitute.Substitute.For<IInventoryRepository>();
+            mockRepository.GenerateInventoryId().Returns(id);
         }
 
         [Test]
@@ -35,9 +35,9 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         {
             var cmd = new GetInventoryQry() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0" };
             var expect = new InventoryVM() { Id = id.ToString(), Item = inventory.Item, Constraints = inventory.Constraint };
-            repository.GetBy(Arg.Any<InventoryId>()).Returns(inventory);
+            mockRepository.GetBy(Arg.Any<InventoryId>()).Returns(inventory);
 
-            var svc = new GetInventorySvc(new IdTranslator(), new InventoryVMTranslator(), repository);
+            var svc = new GetInventorySvc(new IdTranslator(), new InventoryVMTranslator(), mockRepository);
             var actual = svc.Handle(cmd, new CancellationToken()).Result;
 
             actual.Should().Be(expect);
@@ -56,7 +56,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
             };
             var cmd = new AddInventoryCmd() { Qty = 10, Item = item, Constraints = new[] { constraint } };
 
-            var svc = new AddInventorySvc(new InventoryVMTranslator(), repository);
+            var svc = new AddInventorySvc(new InventoryVMTranslator(), mockRepository);
             var actual = svc.Handle(cmd, new CancellationToken()).Result;
 
             actual.Should().Be(expect);

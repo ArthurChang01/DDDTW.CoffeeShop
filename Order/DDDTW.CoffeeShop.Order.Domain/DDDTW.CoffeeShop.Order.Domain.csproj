@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\DDDTW.CoffeeShop.CommonLib\DDDTW.CoffeeShop.CommonLib.csproj" />
+  </ItemGroup>
+
 </Project>
