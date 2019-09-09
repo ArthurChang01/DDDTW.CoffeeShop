@@ -1,6 +1,7 @@
-﻿using System.Linq;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Exceptions;
+using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications;
+using System.Linq;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Policies
 {
@@ -21,6 +22,9 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Policies
 
             if (this.aggregateRoot.Constraint.Any() == false)
                 this.exceptions.Add(new EmptyConstraintException());
+
+            if (new ConstraintSpec(this.aggregateRoot.Constraint).IsSatisfy() == false)
+                this.exceptions.Add(new ConstraintValueIncorrectException());
 
             return this.exceptions.Count == 0;
         }

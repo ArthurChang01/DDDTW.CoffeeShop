@@ -1,10 +1,10 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.CommonLib.Interfaces;
+using NEventStore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
-using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using NEventStore;
 
 namespace DDDTW.CoffeeShop.Infrastructures
 {
@@ -16,6 +16,7 @@ namespace DDDTW.CoffeeShop.Infrastructures
 
         private readonly IStoreEvents eventStore = null;
         private readonly List<T> projectionDb = new List<T>();
+        private readonly IFactory<T, TId> factory;
 
         #endregion Fields
 
@@ -29,6 +30,12 @@ namespace DDDTW.CoffeeShop.Infrastructures
                 .UsingBinarySerialization()
                 .Compress()
                 .Build();
+        }
+
+        protected ESRepositoryBase(in IFactory<T, TId> factory)
+            : this()
+        {
+            this.factory = factory;
         }
 
         #endregion Contructors
@@ -47,8 +54,8 @@ namespace DDDTW.CoffeeShop.Infrastructures
             {
                 if (stream.CommittedEvents.Count == 0)
                     return new T();
-                var events = stream.CommittedEvents.Select(o => o.Body).Cast<IDomainEvent>();
-                return Activator.CreateInstance(typeof(T), args: events.ToArray()) as T;
+                var events = stream.CommittedEvents.Select(o => o.Body).OfType<IEnumerable<IDomainEvent>>().SelectMany(o => o);
+                return this.factory.Create(events);
             }
         }
 
@@ -82,7 +89,7 @@ namespace DDDTW.CoffeeShop.Infrastructures
 
         public void Append(T entity, IEnumerable<IDomainEvent> events)
         {
-            using (var stream = eventStore.CreateStream(entity.Id.ToString()))
+            using (var stream = eventStore.OpenStream(entity.Id.ToString()))
             {
                 stream.Add(new EventMessage { Body = events });
                 stream.CommitChanges(events.Last().EventId);
@@ -93,7 +100,7 @@ namespace DDDTW.CoffeeShop.Infrastructures
 
         public void Remove(T entity)
         {
-            using (var stream = eventStore.CreateStream(entity.Id.ToString()))
+            using (var stream = eventStore.OpenStream(entity.Id.ToString()))
             {
                 stream.ClearChanges();
             }

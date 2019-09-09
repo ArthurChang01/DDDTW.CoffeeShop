@@ -18,5 +18,4 @@
     <ProjectReference Include="..\DDDTW.CoffeeShop.Inventory.Application\DDDTW.CoffeeShop.Inventory.Application.csproj" />
     <ProjectReference Include="..\DDDTW.CoffeeShop.Inventory.Domain\DDDTW.CoffeeShop.Inventory.Domain.csproj" />
   </ItemGroup>
-
 </Project>

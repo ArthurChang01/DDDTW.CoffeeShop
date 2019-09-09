@@ -6,6 +6,8 @@
         OverUpperBound = 1,
         QtyIsNegative = 2,
         InventoryItemIsNull = 3,
-        ConstraintIsEmpty = 4
+        ConstraintIsEmpty = 4,
+        AmountIsNegative = 5,
+        ConstraintValueIncorrect = 6
     }
 }

@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -13,5 +15,4 @@
     <ProjectReference Include="..\..\DDDTW.CoffeeShop.Infrastructures\DDDTW.CoffeeShop.Infrastructures.csproj" />
     <ProjectReference Include="..\DDDTW.CoffeeShop.Inventory.Domain\DDDTW.CoffeeShop.Inventory.Domain.csproj" />
   </ItemGroup>
-
 </Project>

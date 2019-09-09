@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
+using System;
+using System.Linq;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications
 {
@@ -11,7 +11,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications
         {
             this.Entity = inventory;
             var constraint = inventory.Constraint.First(o => o.Type == InventoryConstraintType.MaxQty);
-            var upperBound = Convert.ChangeType(constraint.Value, Type.GetType(constraint.DataTypeOfValue) ??
+            var upperBound = Convert.ChangeType(constraint.Value, Type.GetType($"System.{constraint.DataTypeOfValue}") ??
                                                                   throw new InvalidCastException());
 
             this.Predicate = _ => inventory.Qty + amount <= (int)upperBound;

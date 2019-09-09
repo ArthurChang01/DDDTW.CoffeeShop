@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 {
     public class InventoryItem : ValueObject<InventoryItem>
     {
+        private readonly string inboundUnitName;
+
         #region Constructors
 
         public InventoryItem()
@@ -14,18 +16,19 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             this.Price = 0;
             this.Manufacturer = string.Empty;
             this.ItemCategory = ItemCategory.Milk;
-            this.InBoundUnitName = string.Empty;
+            this.InboundUnitName = string.Empty;
             this.Capacity = 0;
         }
 
-        public InventoryItem(string name, string sku, decimal price, string manufacturer, ItemCategory itemCategory, string inBoundUnitName, int capacity)
+        public InventoryItem(string name, string sku, decimal price, string manufacturer, ItemCategory itemCategory, string inboundUnitName, int capacity)
         {
+            this.inboundUnitName = inboundUnitName;
             this.Name = name;
             this.SKU = sku;
             this.Price = price;
             this.Manufacturer = manufacturer;
             this.ItemCategory = itemCategory;
-            this.InBoundUnitName = inBoundUnitName;
+            this.InboundUnitName = inboundUnitName;
             this.Capacity = capacity;
         }
 
@@ -43,7 +46,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 
         public ItemCategory ItemCategory { get; private set; }
 
-        public string InBoundUnitName { get; private set; }
+        public string InboundUnitName { get; private set; }
 
         public int Capacity { get; private set; }
 
@@ -56,7 +59,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             yield return this.Price;
             yield return this.Manufacturer;
             yield return this.ItemCategory;
-            yield return this.InBoundUnitName;
+            yield return this.InboundUnitName;
             yield return this.Capacity;
         }
     }

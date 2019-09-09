@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels;
-using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
+﻿using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels;
 using MediatR;
+using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands
 {
@@ -9,8 +8,8 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Comma
     {
         public int Qty { get; set; }
 
-        public InventoryItem Item { get; set; }
+        public InventoryItemVM Item { get; set; }
 
-        public IEnumerable<InventoryConstraint> Constraints { get; set; }
+        public IEnumerable<InventoryConstraintVM> Constraints { get; set; }
     }
 }

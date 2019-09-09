@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
 using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.QueryModels;
@@ -12,6 +8,10 @@ using DDDTW.CoffeeShop.Inventory.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventory.WebAPI.Controllers
 {
@@ -41,11 +41,11 @@ namespace DDDTW.CoffeeShop.Inventory.WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{id}")]
         [ProducesDefaultResponseType(typeof(InventoryVM))]
-        public async Task<ActionResult<InventoryVM>> Get([FromRoute] GetInventoryQry qry)
+        public async Task<ActionResult<InventoryVM>> Get([FromRoute] string id)
         {
-            var vm = await this.mediator.Send(qry);
+            var vm = await this.mediator.Send(new GetInventoryQry() { Id = id });
             if (vm == null)
                 return this.BadRequest();
 

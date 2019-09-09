@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
-using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
 {
@@ -8,13 +7,16 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewM
     {
         public string Id { get; set; }
 
-        public InventoryItem Item { get; set; }
+        public int Qty { get; set; }
 
-        public IEnumerable<InventoryConstraint> Constraints { get; set; }
+        public InventoryItemVM Item { get; set; }
+
+        public IEnumerable<InventoryConstraintVM> Constraints { get; set; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return this.Id;
+            yield return this.Qty;
             yield return this.Item;
             foreach (var constraint in this.Constraints)
             {

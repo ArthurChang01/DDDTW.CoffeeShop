@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
+﻿using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
 using FluentValidation;
+using System.Linq;
 
 namespace DDDTW.CoffeeShop.Inventory.WebAPI.Validations
 {
@@ -22,8 +22,7 @@ namespace DDDTW.CoffeeShop.Inventory.WebAPI.Validations
 
             RuleFor(x => x.Constraints)
                 .Must(collection => collection == null || collection.All(x =>
-                                        string.IsNullOrWhiteSpace(x.Value) &&
-                                        string.IsNullOrWhiteSpace(x.DataTypeOfValue)));
+                                        string.IsNullOrWhiteSpace(x.Value)));
         }
     }
 }

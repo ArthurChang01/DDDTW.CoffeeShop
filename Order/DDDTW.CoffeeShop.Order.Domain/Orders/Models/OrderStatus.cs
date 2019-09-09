@@ -5,6 +5,7 @@
         Initial = 0,
         Processing = 1,
         Deliver = 2,
-        Closed = 3
+        Closed = 3,
+        Cancel = 4
     }
 }

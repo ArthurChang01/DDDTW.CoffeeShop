@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Order.Domain.Orders.DomainEvents;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Exceptions;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Policies;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Specifications;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
 {
     public class Order : AggregateRoot<OrderId>
     {
         private readonly List<OrderItem> orderItems;
+
+        #region Constructors
 
         public Order()
         {
@@ -37,6 +39,8 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
 
             this.ApplyEvent(new OrderCreated(this.Id, this.OrderItems));
         }
+
+        #endregion Constructors
 
         #region Properties
 
@@ -95,6 +99,11 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
                 throw new StatusTransitionException(this.Status, OrderStatus.Closed);
 
             this.ChangeStatus(OrderStatus.Closed);
+        }
+
+        public void Cancel()
+        {
+            this.ChangeStatus(OrderStatus.Cancel);
         }
 
         #endregion Public Methods

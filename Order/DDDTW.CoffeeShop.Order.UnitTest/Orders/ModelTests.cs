@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DDDTW.CoffeeShop.Order.Domain.Orders;
+﻿using DDDTW.CoffeeShop.Order.Domain.Orders;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Exceptions;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Models = DDDTW.CoffeeShop.Order.Domain.Orders.Models;
 
 namespace DDDTW.CoffeeShop.Order.UnitTest.Orders
 {
     [Parallelizable(ParallelScope.All)]
-    public class DomainModelTests
+    public class ModelTests
     {
         [Test]
         public void CreateOrder()
@@ -139,6 +139,16 @@ namespace DDDTW.CoffeeShop.Order.UnitTest.Orders
 
             action.Should().ThrowExactly<StatusTransitionException>()
                 .And.Message.Should().Be(errorMessage);
+        }
+
+        [Test]
+        public void WhenCancelMethodIsCalled_And_OrderStatusIsDeliver_ThenOrderStatusChangesStatusFromDeliverToCancel()
+        {
+            var order = this.GetOrderBuildingParam(status: Models.OrderStatus.Deliver).Order;
+
+            order.Cancel();
+
+            order.Status.Should().Be(Models.OrderStatus.Cancel);
         }
 
         private (Models.OrderId OrderId, Models.OrderItem OrderItem, Models.Order Order) GetOrderBuildingParam(

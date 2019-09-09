@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
-using DDDTW.CoffeeShop.Inventory.Domain.Inventories.DomainEvents;
+﻿using DDDTW.CoffeeShop.Inventory.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Exceptions;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
+using System.Linq;
 using Models = DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 
 namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
 {
     [Parallelizable(ParallelScope.All)]
-    public class DomainModelTests
+    public class ModelTests
     {
         [Test]
         public void CreateInventory()
@@ -85,14 +85,14 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Inbound_negative_Digital_Then_Throw_ArgumentException()
+        public void When_Inbound_negative_Digital_Then_Throw_AmountIncorrectException()
         {
             var param = this.GetParameters();
             var actual = new Models.Inventory(param.id, 0, param.item, new[] { param.constraint });
 
             Action action = () => actual.Inbound(-3);
 
-            action.Should().Throw<ArgumentException>();
+            action.Should().Throw<AmountIncorrectException>();
         }
 
         [Test]
@@ -122,14 +122,14 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Outbound_Negative_Digital_Then_Throw_ArgumentException()
+        public void When_Outbound_Negative_Digital_Then_Throw_AmountIncorrectException()
         {
             var param = this.GetParameters();
             var actual = new Models.Inventory(param.id, 0, param.item, new[] { param.constraint });
 
             Action action = () => actual.Outbound(-3);
 
-            action.Should().Throw<ArgumentException>();
+            action.Should().Throw<AmountIncorrectException>();
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
             return (new Models.InventoryId(seqNo, occuredDate ?? DateTimeOffset.Now),
                 new Models.InventoryItem("Milk", "X-R-200", 80, "MilkShop", Models.ItemCategory.Milk,
                     "Bottle", 2000),
-                new Models.InventoryConstraint(Models.InventoryConstraintType.MaxQty, maxQty.ToString(), typeof(int).ToString()));
+                new Models.InventoryConstraint(Models.InventoryConstraintType.MaxQty, maxQty.ToString(), Models.InventoryConstraintValueType.Int32));
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 {
@@ -11,7 +11,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
         {
         }
 
-        public InventoryConstraint(InventoryConstraintType type, string value, string valueType)
+        public InventoryConstraint(InventoryConstraintType type, string value, InventoryConstraintValueType valueType)
         {
             this.Type = type;
             this.Value = value;
@@ -26,7 +26,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 
         public string Value { get; private set; }
 
-        public string DataTypeOfValue { get; private set; }
+        public InventoryConstraintValueType DataTypeOfValue { get; private set; }
 
         #endregion Properties
 

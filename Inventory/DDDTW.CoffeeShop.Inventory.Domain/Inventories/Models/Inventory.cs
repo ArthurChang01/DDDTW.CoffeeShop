@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Exceptions;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Policies;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 {
@@ -31,7 +30,6 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             this.constraints = ieConstraints as List<InventoryConstraint> ??
                                ieConstraints?.ToList() ??
                                new List<InventoryConstraint>();
-            new InventoryPolicy(this);
 
             var policy = new InventoryPolicy(this);
             if (policy.IsValid() == false)
@@ -56,8 +54,8 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 
         public void Inbound(int amount)
         {
-            if (amount < 0)
-                throw new ArgumentException("amount can not be negative digital");
+            if (new AmountSpec(amount).IsSatisfy() == false)
+                throw new AmountIncorrectException();
             if (new InboundSpec(this, amount).IsSatisfy() == false)
                 throw new OverQtyLimitationException(amount);
 
@@ -67,8 +65,8 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
 
         public void Outbound(int amount)
         {
-            if (amount < 0)
-                throw new ArgumentException("amount can not be negative digital");
+            if (new AmountSpec(amount).IsSatisfy() == false)
+                throw new AmountIncorrectException();
             if (new OutboundSpec(this.Qty, amount).IsSatisfy() == false)
                 throw new InventoryShortageException(amount);
 
