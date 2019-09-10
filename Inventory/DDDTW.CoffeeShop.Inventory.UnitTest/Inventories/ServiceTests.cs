@@ -25,7 +25,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         {
             id = new InventoryId();
             inventory = new Domain.Inventories.Models.Inventory(id, 10, new InventoryItem(),
-                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", InventoryConstraintValueType.Int32) });
+                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
 
             mockRepository = NSubstitute.Substitute.For<IInventoryRepository>();
             mockRepository.GenerateInventoryId().Returns(id);
@@ -54,7 +54,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         public void AddInventory()
         {
             var item = new InventoryItemVM("name", "sku", 20, "manu", ItemCategory.Milk, "name", 10);
-            var constraint = new InventoryConstraintVM(InventoryConstraintType.MaxQty, "10", InventoryConstraintValueType.Int32);
+            var constraint = new InventoryConstraintVM(InventoryConstraintType.MaxQty, "10", TypeCode.Int32);
             var expect = new InventoryVM()
             {
                 Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0",
@@ -77,7 +77,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         public void Inbound()
         {
             var result = new Domain.Inventories.Models.Inventory(id, 10, new InventoryItem(),
-               new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", InventoryConstraintValueType.Int32) });
+               new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
             var repository = NSubstitute.Substitute.For<IInventoryRepository>();
             repository.GetBy(Arg.Any<InventoryId>()).Returns(result);
             var cmd = new InboundCmd() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0", Amount = 10 };
@@ -92,7 +92,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         public void Outbound()
         {
             var result = new Domain.Inventories.Models.Inventory(id, 10, new InventoryItem(),
-                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", InventoryConstraintValueType.Int32) });
+                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
             var repository = NSubstitute.Substitute.For<IInventoryRepository>();
             repository.GetBy(Arg.Any<InventoryId>()).Returns(result);
             var cmd = new OutBoundCmd() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0", Amount = 5 };

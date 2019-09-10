@@ -37,7 +37,24 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Create_Inventory_And_Qty_Is_Negative_Digital_Then_Throw_NegativeQtyException()
+        public void CreateInventory_And_ConstraintTypeIsMaxQty_And_ConstraintValueTypeIsString_Then_ThrowException()
+        {
+            var param = this.GetParameters(1, DateTimeOffset.Now);
+            Action action = () => new Models.Inventory(param.id, 1, param.item,
+                 new[]
+                 {
+                    new Models.InventoryConstraint(
+                        Models.InventoryConstraintType.MaxQty,
+                        "10",
+                        TypeCode.String),
+                 });
+
+            action.Should().ThrowExactly<AggregateException>()
+                .WithInnerException<ConstraintValueIncorrectException>();
+        }
+
+        [Test]
+        public void WhenCreateInventory_And_QtyIsNegativeDigital_ThenThrowNegativeQtyException()
         {
             var param = this.GetParameters();
 
@@ -48,7 +65,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Create_Inventory_And_Item_Is_Null_Then_Throw_InventoryItemIsNullException()
+        public void WhenCreateInventory_And_ItemIsNull_ThenThrowInventoryItemIsNullException()
         {
             var param = this.GetParameters();
 
@@ -59,7 +76,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Create_Inventory_And_Constraint_Is_Empty_Then_Throw_EmptyConstraintException()
+        public void When_CreateInventory_And_ConstraintIsEmpty_Then_ThrowEmptyConstraintException()
         {
             var param = this.GetParameters();
 
@@ -70,7 +87,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void Given_Qty_Is_0_When_Inbound_50_Then_Qty_Is_50()
+        public void Given_QtyIs0_When_InboundIs50_Then_QtyIs50()
         {
             var param = this.GetParameters(maxQty: 50);
             var expectQty = 50;
@@ -85,7 +102,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Inbound_negative_Digital_Then_Throw_AmountIncorrectException()
+        public void When_InboundIsNegativeDigital_Then_ThrowAmountIncorrectException()
         {
             var param = this.GetParameters();
             var actual = new Models.Inventory(param.id, 0, param.item, new[] { param.constraint });
@@ -96,7 +113,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void Given_Qty_Is_26_And_MaxQty_Is_50_When_Inbound_30_Then_Throw_OverQtyLimitationException()
+        public void Given_QtyIs26_And_MaxQtyIs50_When_InboundIs30_Then_ThrowOverQtyLimitationException()
         {
             var param = this.GetParameters(maxQty: 50);
             var actual = new Models.Inventory(param.id, 26, param.item, new[] { param.constraint });
@@ -107,7 +124,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void Given_Qty_Is_37_When_Outbound_2_Then_Qty_Is_35()
+        public void Given_QtyIs37_When_OutboundIs2_ThenQtyIs35()
         {
             var param = this.GetParameters();
             var expectQty = 35;
@@ -122,7 +139,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void When_Outbound_Negative_Digital_Then_Throw_AmountIncorrectException()
+        public void When_OutboundIsNegativeDigital_Then_ThrowAmountIncorrectException()
         {
             var param = this.GetParameters();
             var actual = new Models.Inventory(param.id, 0, param.item, new[] { param.constraint });
@@ -133,7 +150,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
         }
 
         [Test]
-        public void Given_Qty_Is_17_When_Outbound_38_Then_Throw_InventoryShortageException()
+        public void Given_QtyIs17_When_OutboundIs38_Then_ThrowInventoryShortageException()
         {
             var param = this.GetParameters();
             var actual = new Models.Inventory(param.id, 17, param.item, new[] { param.constraint });
@@ -149,7 +166,7 @@ namespace DDDTW.CoffeeShop.Inventory.UnitTest.Inventories
             return (new Models.InventoryId(seqNo, occuredDate ?? DateTimeOffset.Now),
                 new Models.InventoryItem("Milk", "X-R-200", 80, "MilkShop", Models.ItemCategory.Milk,
                     "Bottle", 2000),
-                new Models.InventoryConstraint(Models.InventoryConstraintType.MaxQty, maxQty.ToString(), Models.InventoryConstraintValueType.Int32));
+                new Models.InventoryConstraint(Models.InventoryConstraintType.MaxQty, maxQty.ToString(), TypeCode.Int32));
         }
     }
 }

@@ -8,9 +8,18 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Specifications
 {
     internal class ConstraintSpec : Specification<IEnumerable<InventoryConstraint>>
     {
-        public ConstraintSpec(IEnumerable<InventoryConstraint> constraints)
-            : base(constraints, q => q.All(o => Convert.ChangeType(o.Value, Type.GetType($"System.{o.DataTypeOfValue}")) != null))
+        private readonly IDictionary<InventoryConstraintType, TypeCode> constraintMap =
+            new Dictionary<InventoryConstraintType, TypeCode>()
         {
+            { InventoryConstraintType.MaxQty, TypeCode.Int32}
+        };
+
+        public ConstraintSpec(IEnumerable<InventoryConstraint> constraints)
+        {
+            this.Entity = constraints;
+            this.Predicate = q => q.All(o =>
+                (constraintMap.ContainsKey(o.Type) && constraintMap[o.Type] == o.DataTypeOfValue) &&
+                Convert.ChangeType(o.Value, o.DataTypeOfValue) != null);
         }
     }
 }

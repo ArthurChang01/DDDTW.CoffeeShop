@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
+using System;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
@@ -17,7 +18,7 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewM
             this.DataTypeOfValue = constraint.DataTypeOfValue.ToString();
         }
 
-        public InventoryConstraintVM(InventoryConstraintType type, string value, InventoryConstraintValueType typeOfValue)
+        public InventoryConstraintVM(InventoryConstraintType type, string value, TypeCode typeOfValue)
         {
             this.Type = type.ToString();
             this.Value = value;

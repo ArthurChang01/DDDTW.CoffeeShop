@@ -14,7 +14,7 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DomainServices
             return input.Select(o => new InventoryConstraint(
                 (InventoryConstraintType)Enum.Parse(typeof(InventoryConstraintType), o.Type),
                 o.Value,
-                (InventoryConstraintValueType)Enum.Parse(typeof(InventoryConstraintValueType), o.DataTypeOfValue)));
+                (TypeCode)Enum.Parse(typeof(TypeCode), o.DataTypeOfValue)));
         }
     }
 }
