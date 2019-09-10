@@ -1,4 +1,5 @@
 ﻿using DDDTW.CoffeeShop.Order.Domain.Orders;
+using DDDTW.CoffeeShop.Order.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Exceptions;
 using FluentAssertions;
 using NUnit.Framework;
@@ -63,7 +64,7 @@ namespace DDDTW.CoffeeShop.Order.UnitTest.Orders
             var newItem = new Models.OrderItem(new Models.Product(), 10, 10);
             var order = this.GetOrderBuildingParam().Order;
 
-            order.ChangeItem(new[] { newItem });
+            order.ChangeItem(new ChangeItemCmd(new[] { newItem }));
 
             order.OrderItems.First().Should().Be(newItem);
             order.OrderItems.Count.Should().Be(1);

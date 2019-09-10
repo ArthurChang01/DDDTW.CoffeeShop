@@ -2,7 +2,7 @@
 {
     public class ChangeQtyModel
     {
-        public InventoryOperation Operation { get; set; }
+        public InventoryOperation ActionMode { get; set; }
 
         public int Amount { get; set; }
     }

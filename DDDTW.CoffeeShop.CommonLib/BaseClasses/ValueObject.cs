@@ -3,8 +3,8 @@ using System.Linq;
 
 namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 {
-    public abstract class ValueObject<T>
-        where T : ValueObject<T>
+    public abstract class PropertyComparer<T>
+        where T : PropertyComparer<T>
     {
         protected abstract IEnumerable<object> GetEqualityComponents();
 
@@ -24,7 +24,7 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
                 .Aggregate(1, (cur, obj) => cur.GetHashCode() ^ obj.GetHashCode());
         }
 
-        public static bool operator ==(ValueObject<T> left, ValueObject<T> right)
+        public static bool operator ==(PropertyComparer<T> left, PropertyComparer<T> right)
         {
             if (ReferenceEquals(left, null) && ReferenceEquals(right, null)) return true;
 
@@ -33,9 +33,14 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
             return left.Equals(right);
         }
 
-        public static bool operator !=(ValueObject<T> left, ValueObject<T> right)
+        public static bool operator !=(PropertyComparer<T> left, PropertyComparer<T> right)
         {
             return !(left == right);
         }
+    }
+
+    public abstract class ValueObject<T> : PropertyComparer<T>
+        where T : ValueObject<T>
+    {
     }
 }

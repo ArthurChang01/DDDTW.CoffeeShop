@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
 {
-    public class InventoryConstraintVM : ValueObject<InventoryConstraintVM>
+    public class InventoryConstraintVM : PropertyComparer<InventoryConstraintVM>
     {
         public InventoryConstraintVM()
         {

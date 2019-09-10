@@ -6,14 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.4.0" />
+    <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DDDTW.CoffeeShop.Order.Application\DDDTW.CoffeeShop.Order.Application.csproj" />
     <ProjectReference Include="..\DDDTW.CoffeeShop.Order.Domain\DDDTW.CoffeeShop.Order.Domain.csproj" />
   </ItemGroup>
-
 </Project>

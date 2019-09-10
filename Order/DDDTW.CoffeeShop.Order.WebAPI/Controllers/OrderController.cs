@@ -1,9 +1,7 @@
-﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
-using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Commands;
-using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.QueryModels;
+﻿using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Messages;
 using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels;
-using DDDTW.CoffeeShop.Order.Domain.Orders.Interfaces;
+using DDDTW.CoffeeShop.Order.Domain.Orders.Models;
+using DDDTW.CoffeeShop.Order.WebAPI.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Models = DDDTW.CoffeeShop.Order.Domain.Orders.Models;
 
 namespace DDDTW.CoffeeShop.Order.WebAPI.Controllers
 {
@@ -20,25 +17,17 @@ namespace DDDTW.CoffeeShop.Order.WebAPI.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IOrderRepository repository;
-        private readonly ITranslator<OrderVM, Models.Order> vmTranslator;
 
-        public OrderController(
-            IMediator mediator,
-            IOrderRepository repository,
-            ITranslator<OrderVM, Models.Order> vmTranslator)
+        public OrderController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.repository = repository;
-            this.vmTranslator = vmTranslator;
         }
 
         [HttpGet]
         [ProducesDefaultResponseType(typeof(IEnumerable<OrderVM>))]
         public ActionResult<IEnumerable<OrderVM>> Get([FromQuery] int pageNo, [FromQuery] int pageSize)
         {
-            var result = this.repository.Get(new Specification<Models.Order>(x => true), pageNo, pageSize)
-                .Select(o => this.vmTranslator.Translate(o));
+            var result = this.mediator.Send(new GetAllOrderMsg(pageNo, pageSize));
 
             return this.Ok(result);
         }
@@ -47,7 +36,7 @@ namespace DDDTW.CoffeeShop.Order.WebAPI.Controllers
         [ProducesDefaultResponseType(typeof(OrderVM))]
         public async ValueTask<ActionResult<OrderVM>> Get([FromRoute]string id)
         {
-            var vm = await this.mediator.Send(new GetOrderQry() { Id = id });
+            var vm = await this.mediator.Send(new GetOrderMsg() { Id = id });
             if (vm == null)
                 return this.BadRequest();
 
@@ -56,36 +45,25 @@ namespace DDDTW.CoffeeShop.Order.WebAPI.Controllers
 
         [HttpPost]
         [ProducesDefaultResponseType(typeof(CreatedResult))]
-        public async ValueTask<ActionResult> Post([FromBody] CreateOrderCmd cmd)
+        public async ValueTask<ActionResult> Post([FromBody] AddOrderReq req)
         {
+            var cmd = new CreateOrderMsg() { Items = req.Items.Select(o => new OrderItemVM(new ProductVM(o.Product.Id, o.Product.Name), o.Qty, o.Price)) };
             var vm = await this.mediator.Send(cmd);
             return this.Created(new Uri($"{this.Request.GetDisplayUrl()}/api/Order/{vm.Id}"), vm);
         }
 
-        [HttpPatch("orderItems")]
-        public async ValueTask<ActionResult> Patch([FromBody] ChangeItemCmd cmd)
+        [HttpPatch("{id}/orderItems")]
+        public async ValueTask<ActionResult> Patch([FromRoute]string id, [FromBody] ChangeOrderItemReq req)
         {
+            var cmd = new ChangeItemMsg(id, req.OrderItems);
             await this.mediator.Send(cmd);
             return this.Ok();
         }
 
-        [HttpPatch("status/process")]
-        public async ValueTask<ActionResult> Patch([FromBody] ProcessOrderCmd cmd)
+        [HttpPatch("{id}/status")]
+        public async ValueTask<ActionResult> Patch([FromRoute]string id, [FromBody] ChangeStatusReq req)
         {
-            await this.mediator.Send(cmd);
-            return this.Ok();
-        }
-
-        [HttpPatch("status/deliver")]
-        public async ValueTask<ActionResult> Patch([FromBody] DeliverOrderCmd cmd)
-        {
-            await this.mediator.Send(cmd);
-            return this.Ok();
-        }
-
-        [HttpPatch("status/close")]
-        public async ValueTask<ActionResult> Patch([FromBody] CloseOrderCmd cmd)
-        {
+            var cmd = this.GetMsg(id, req);
             await this.mediator.Send(cmd);
             return this.Ok();
         }
@@ -93,8 +71,30 @@ namespace DDDTW.CoffeeShop.Order.WebAPI.Controllers
         [HttpDelete("{id}")]
         public async ValueTask<ActionResult> Delete([FromRoute] string id)
         {
-            await this.mediator.Send(new CancelOrderCmd() { Id = id });
+            var cmd = new CancelOrderMsg(id);
+            await this.mediator.Send(cmd);
             return this.Ok();
+        }
+
+        private IRequest<Unit> GetMsg(string id, ChangeStatusReq dto)
+        {
+            IRequest<Unit> cmd = null;
+            switch (dto.OrderStatus)
+            {
+                case OrderStatus.Processing:
+                    cmd = new ProcessOrderMsg() { Id = id };
+                    break;
+
+                case OrderStatus.Deliver:
+                    cmd = new DeliverOrderMsg() { Id = id };
+                    break;
+
+                case OrderStatus.Closed:
+                    cmd = new CloseOrderMsg() { Id = id };
+                    break;
+            }
+
+            return cmd;
         }
     }
 }

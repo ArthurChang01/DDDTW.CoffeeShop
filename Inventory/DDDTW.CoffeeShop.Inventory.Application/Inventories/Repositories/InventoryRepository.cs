@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Infrastructures;
+using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 using System;

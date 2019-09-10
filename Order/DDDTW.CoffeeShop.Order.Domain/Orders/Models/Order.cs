@@ -1,4 +1,5 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Order.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Order.Domain.Orders.DomainEvents;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Exceptions;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Policies;
@@ -16,6 +17,7 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
         #region Constructors
 
         public Order()
+            : base(false)
         {
             this.Id = new OrderId();
             this.Status = OrderStatus.Initial;
@@ -23,7 +25,8 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
             this.CreatedDate = DateTimeOffset.Now;
         }
 
-        public Order(OrderId id, OrderStatus status, IEnumerable<OrderItem> items, DateTimeOffset created, DateTimeOffset? modified = null)
+        public Order(OrderId id, OrderStatus status, IEnumerable<OrderItem> items, DateTimeOffset created, DateTimeOffset? modified = null, bool suppressEvent = false)
+            : base(suppressEvent)
         {
             this.Id = id;
             this.Status = status;
@@ -37,7 +40,7 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
             if (policy.IsValid() == false)
                 throw policy.GetWrapperException;
 
-            this.ApplyEvent(new OrderCreated(this.Id, this.OrderItems));
+            this.ApplyEvent(new OrderCreated(this.Id, this.OrderItems, this.CreatedDate));
         }
 
         #endregion Constructors
@@ -58,47 +61,38 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
 
         #region Public Methods
 
-        public void ChangeItem(IEnumerable<OrderItem> changedItems)
+        public void ChangeItem(ChangeItemCmd cmd)
         {
-            var newItemList = this.orderItems.Union(changedItems);
+            var newItemList = this.orderItems.Union(cmd.Items);
 
             this.orderItems.Clear();
             this.orderItems.AddRange(newItemList);
 
-            this.ApplyEvent(new OrderItemsChanged(this.Id, changedItems));
+            this.ApplyEvent(new OrderItemsChanged(this.Id, cmd.Items));
         }
 
         public void Process()
         {
-            if (this.Status == OrderStatus.Processing) return;
+            var status = OrderStatus.Processing;
+            this.VerifyStatus(OrderStatus.Initial, status);
 
-            var spec = new StatusTransitionSpec(this.Status, OrderStatus.Initial, OrderStatus.Processing);
-            if (spec.IsSatisfy() == false)
-                throw new StatusTransitionException(this.Status, OrderStatus.Processing);
-
-            this.ChangeStatus(OrderStatus.Processing);
+            this.ChangeStatus(status);
         }
 
         public void Deliver()
         {
-            if (this.Status == OrderStatus.Deliver) return;
+            var status = OrderStatus.Deliver;
+            this.VerifyStatus(OrderStatus.Processing, status);
 
-            var spec = new StatusTransitionSpec(this.Status, OrderStatus.Processing, OrderStatus.Deliver);
-            if (spec.IsSatisfy() == false)
-                throw new StatusTransitionException(this.Status, OrderStatus.Deliver);
-
-            this.ChangeStatus(OrderStatus.Deliver);
+            this.ChangeStatus(status);
         }
 
         public void Closed()
         {
-            if (this.Status == OrderStatus.Closed) return;
+            var status = OrderStatus.Closed;
+            this.VerifyStatus(OrderStatus.Deliver, status);
 
-            var spec = new StatusTransitionSpec(this.Status, OrderStatus.Deliver, OrderStatus.Closed);
-            if (spec.IsSatisfy() == false)
-                throw new StatusTransitionException(this.Status, OrderStatus.Closed);
-
-            this.ChangeStatus(OrderStatus.Closed);
+            this.ChangeStatus(status);
         }
 
         public void Cancel()
@@ -109,6 +103,15 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
         #endregion Public Methods
 
         #region Private Methods
+
+        private void VerifyStatus(OrderStatus previousStatus, OrderStatus targetStatus)
+        {
+            if (this.Status == targetStatus) return;
+
+            var spec = new StatusTransitionSpec(this.Status, previousStatus, targetStatus);
+            if (spec.IsSatisfy() == false)
+                throw new StatusTransitionException(this.Status, targetStatus);
+        }
 
         private void ChangeStatus(OrderStatus status)
         {

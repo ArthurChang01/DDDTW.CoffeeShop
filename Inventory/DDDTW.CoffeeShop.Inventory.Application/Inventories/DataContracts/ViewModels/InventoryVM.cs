@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
 {
-    public class InventoryVM : ValueObject<InventoryVM>
+    public class InventoryVM : PropertyComparer<InventoryVM>
     {
         public string Id { get; set; }
 

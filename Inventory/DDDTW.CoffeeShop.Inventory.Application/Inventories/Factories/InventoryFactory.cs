@@ -1,5 +1,5 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Infrastructures;
+using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Interfaces;
 using System;
@@ -25,11 +25,13 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.Factories
             {
                 this.When((dynamic)@event);
             }
+
+            this.aggregateRoot.UnsuppressEvent();
         }
 
         private void When(InventoryCreated @event)
         {
-            this.aggregateRoot = new Models.Inventory(@event.EntityId, @event.Qty, @event.Item, @event.Constraints);
+            this.aggregateRoot = new Models.Inventory(@event.EntityId, @event.Qty, @event.Item, @event.Constraints, true);
         }
 
         private void When(Inbounded @event)

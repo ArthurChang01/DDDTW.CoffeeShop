@@ -1,5 +1,5 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.QueryModels;
+using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Messages;
 using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Models;
@@ -12,7 +12,7 @@ using Models = DDDTW.CoffeeShop.Order.Domain.Orders.Models;
 
 namespace DDDTW.CoffeeShop.Order.Application.Orders.Applications
 {
-    public class GetOrderSvc : IRequestHandler<GetOrderQry, OrderVM>
+    public class GetOrderSvc : IRequestHandler<GetOrderMsg, OrderVM>
     {
         private readonly ITranslator<OrderId, string> idTranslator;
         private readonly ITranslator<OrderVM, Models.Order> vmTranslator;
@@ -28,7 +28,7 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.Applications
             this.repository = repository;
         }
 
-        public Task<OrderVM> Handle(GetOrderQry request, CancellationToken cancellationToken)
+        public Task<OrderVM> Handle(GetOrderMsg request, CancellationToken cancellationToken)
         {
             var id = this.idTranslator.Translate(request.Id);
             var order = this.repository.GetBy(id) ?? throw new ArgumentException();

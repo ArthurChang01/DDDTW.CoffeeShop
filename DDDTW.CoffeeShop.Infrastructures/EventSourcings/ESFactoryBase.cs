@@ -2,7 +2,7 @@
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Infrastructures
+namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
 {
     public abstract class ESFactoryBase<T, TId> : IFactory<T, TId>
         where T : AggregateRoot<TId>, new()

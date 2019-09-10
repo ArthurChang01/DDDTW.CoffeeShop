@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Infrastructures;
+using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Models;
 using System;
@@ -13,6 +13,11 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.Repositories
 {
     public class OrderRepository : ESRepositoryBase<Models.Order, OrderId>, IOrderRepository
     {
+        public OrderRepository(IOrderFactory factory)
+            : base(factory)
+        {
+        }
+
         public OrderId GenerateOrderId()
         {
             return new OrderId(base.Count(), DateTimeOffset.Now);

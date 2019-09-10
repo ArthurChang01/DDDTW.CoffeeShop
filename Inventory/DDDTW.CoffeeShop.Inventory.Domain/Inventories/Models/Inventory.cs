@@ -15,6 +15,7 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
         #region Constructors
 
         public Inventory()
+            : base(false)
         {
             this.Id = new InventoryId();
             this.Qty = 0;
@@ -22,7 +23,8 @@ namespace DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models
             this.constraints = new List<InventoryConstraint>();
         }
 
-        public Inventory(InventoryId id, int qty, InventoryItem item, IEnumerable<InventoryConstraint> ieConstraints)
+        public Inventory(InventoryId id, int qty, InventoryItem item, IEnumerable<InventoryConstraint> ieConstraints, bool suppressEvent = false)
+            : base(suppressEvent)
         {
             this.Id = id;
             this.Qty = qty;

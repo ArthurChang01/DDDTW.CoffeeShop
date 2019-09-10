@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
 {
-    public class InventoryItemVM : ValueObject<InventoryItemVM>
+    public class InventoryItemVM : PropertyComparer<InventoryItemVM>
     {
         #region Constructors
 

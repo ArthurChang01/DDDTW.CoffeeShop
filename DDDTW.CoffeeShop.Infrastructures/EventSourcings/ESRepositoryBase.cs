@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace DDDTW.CoffeeShop.Infrastructures
+namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
 {
     public abstract class ESRepositoryBase<T, TId> : IRepository<T, TId>
             where T : AggregateRoot<TId>, new()

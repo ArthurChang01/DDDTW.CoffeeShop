@@ -1,35 +1,37 @@
-﻿using System.Collections.Generic;
-using DDDTW.CoffeeShop.CommonLib.Interfaces;
+﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
+using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 {
     public abstract class Entity<TId> : IEntity<TId>, IEqualityComparer<Entity<TId>>
         where TId : class, IEntityId
     {
+        protected bool suppressEvent = false;
+
         public TId Id { get; protected set; }
 
         protected readonly List<IDomainEvent> domainEvents = new List<IDomainEvent>();
 
-        public Entity(params IDomainEvent[] events)
+        public Entity(bool suppressEvent)
         {
-            this.DomainEvents = this.domainEvents;
+            this.suppressEvent = suppressEvent;
         }
 
-        public IReadOnlyCollection<IDomainEvent> DomainEvents { get; protected set; }
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => this.domainEvents;
 
         protected void ApplyEvent(IDomainEvent @event)
         {
-            this.domainEvents.Add(@event);
-            this.DomainEvents = this.domainEvents;
-        }
+            if (suppressEvent) return;
 
-        protected void ApplyEvent(IEnumerable<IDomainEvent> events)
-        {
-            this.domainEvents.AddRange(events);
-            this.DomainEvents = this.domainEvents;
+            this.domainEvents.Add(@event);
         }
 
         protected virtual object Self => this;
+
+        public void UnsuppressEvent()
+        {
+            this.suppressEvent = false;
+        }
 
         public override bool Equals(object obj)
         {

@@ -61,11 +61,11 @@ namespace DDDTW.CoffeeShop.Inventory.WebAPI.Controllers
         }
 
         [HttpPut("{id}/qty")]
-        public async Task<ActionResult> Put([FromRoute] string id, [FromBody] ChangeQtyModel model)
+        public async Task<ActionResult> PutInbound([FromRoute] string id, [FromBody] ChangeQtyModel model)
         {
-            if (model.Operation.Equals(InventoryOperation.Inbound))
+            if (model.ActionMode == InventoryOperation.Inbound)
                 await this.mediator.Send(new InboundCmd() { Id = id, Amount = model.Amount });
-            else
+            else if (model.ActionMode == InventoryOperation.Outbound)
                 await this.mediator.Send(new OutBoundCmd() { Id = id, Amount = model.Amount });
 
             return this.Ok();

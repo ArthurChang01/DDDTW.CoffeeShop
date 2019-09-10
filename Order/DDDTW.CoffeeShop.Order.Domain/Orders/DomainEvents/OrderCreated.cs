@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Order.Domain.Orders.Models;
+using System;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Order.Domain.Orders.DomainEvents
@@ -8,10 +9,11 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.DomainEvents
     {
         #region Constructors
 
-        public OrderCreated(OrderId id, IEnumerable<OrderItem> orderItems)
+        public OrderCreated(OrderId id, IEnumerable<OrderItem> orderItems, DateTimeOffset createdDate)
             : base(id)
         {
             this.OrderItems = orderItems;
+            this.CreatedDate = createdDate;
         }
 
         #endregion Constructors
@@ -19,6 +21,8 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.DomainEvents
         #region Properties
 
         public IEnumerable<OrderItem> OrderItems { get; set; }
+
+        public DateTimeOffset CreatedDate { get; set; }
 
         #endregion Properties
 
@@ -28,6 +32,8 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.DomainEvents
             {
                 yield return item;
             }
+
+            yield return this.CreatedDate;
         }
     }
 }
