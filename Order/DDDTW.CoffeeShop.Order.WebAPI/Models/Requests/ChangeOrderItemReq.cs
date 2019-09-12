@@ -1,10 +1,10 @@
-﻿using DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels;
+﻿using DDDTW.CoffeeShop.Order.WebAPI.Models.RequestModels;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Order.WebAPI.Models.Requests
 {
     public class ChangeOrderItemReq
     {
-        public IEnumerable<OrderItemVM> OrderItems { get; set; }
+        public IEnumerable<OrderItemRM> OrderItems { get; set; }
     }
 }

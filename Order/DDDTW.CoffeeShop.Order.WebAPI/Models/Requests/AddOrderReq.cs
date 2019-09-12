@@ -1,4 +1,4 @@
-﻿using DDDTW.CoffeeShop.Order.WebAPI.Models.ReadModels;
+﻿using DDDTW.CoffeeShop.Order.WebAPI.Models.RequestModels;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Order.WebAPI.Models.Requests

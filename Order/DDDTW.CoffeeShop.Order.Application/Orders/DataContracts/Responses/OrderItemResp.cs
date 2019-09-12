@@ -2,17 +2,17 @@
 using DDDTW.CoffeeShop.Order.Domain.Orders.Models;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
+namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Responses
 {
-    public class OrderItemVM : PropertyComparer<OrderItemVM>
+    public class OrderItemResp : PropertyComparer<OrderItemResp>
     {
         #region Constructors
 
-        public OrderItemVM()
+        public OrderItemResp()
         {
         }
 
-        public OrderItemVM(ProductVM product, int qty, decimal price)
+        public OrderItemResp(ProductResp product, int qty, decimal price)
         {
             this.Product = product;
             this.Qty = qty;
@@ -20,9 +20,9 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
             this.Fee = this.Qty * this.Price;
         }
 
-        public OrderItemVM(OrderItem item)
+        public OrderItemResp(OrderItem item)
         {
-            this.Product = new ProductVM(item.Product.Id, item.Product.Name);
+            this.Product = new ProductResp(item.Product.Id, item.Product.Name);
             this.Qty = item.Qty;
             this.Price = item.Price;
             this.Fee = item.Fee;
@@ -32,7 +32,7 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
 
         #region Properties
 
-        public ProductVM Product { get; private set; }
+        public ProductResp Product { get; private set; }
 
         public int Qty { get; private set; }
 

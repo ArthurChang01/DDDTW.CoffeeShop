@@ -2,23 +2,23 @@
 using DDDTW.CoffeeShop.Order.Domain.Orders.Models;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
+namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Responses
 {
-    public class ProductVM : PropertyComparer<ProductVM>
+    public class ProductResp : PropertyComparer<ProductResp>
     {
         #region Constructors
 
-        public ProductVM()
+        public ProductResp()
         {
         }
 
-        public ProductVM(string id, string name)
+        public ProductResp(string id, string name)
         {
             this.Id = id;
             this.Name = name;
         }
 
-        public ProductVM(Product product)
+        public ProductResp(Product product)
         {
             this.Id = product.Id;
             this.Name = product.Name;
@@ -26,9 +26,13 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
 
         #endregion Constructors
 
+        #region Properties
+
         public string Id { get; private set; }
 
         public string Name { get; private set; }
+
+        #endregion Properties
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

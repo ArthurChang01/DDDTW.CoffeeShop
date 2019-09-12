@@ -6,7 +6,7 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Messages
     {
         public CancelOrderMsg(string id)
         {
-            Id = id;
+            this.Id = id;
         }
 
         public string Id { get; set; }

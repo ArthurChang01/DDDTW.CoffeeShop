@@ -1,4 +1,4 @@
-﻿namespace DDDTW.CoffeeShop.Order.WebAPI.Models.ReadModels
+﻿namespace DDDTW.CoffeeShop.Order.WebAPI.Models.RequestModels
 {
     public class ProductRM
     {

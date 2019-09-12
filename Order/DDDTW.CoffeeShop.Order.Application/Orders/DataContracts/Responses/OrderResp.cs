@@ -4,17 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
+namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.Responses
 {
-    public class OrderVM : PropertyComparer<OrderVM>
+    public class OrderResp : PropertyComparer<OrderResp>
     {
         #region Constructors
 
-        public OrderVM()
+        public OrderResp()
         {
         }
 
-        public OrderVM(string id, OrderStatus status, IEnumerable<OrderItemVM> items, DateTimeOffset createdDate, DateTimeOffset? modifiedDate)
+        public OrderResp(string id, OrderStatus status, IEnumerable<OrderItemResp> items, DateTimeOffset createdDate, DateTimeOffset? modifiedDate = null)
         {
             this.Id = id;
             this.Status = status.ToString();
@@ -23,11 +23,11 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
             this.ModifiedDate = modifiedDate;
         }
 
-        public OrderVM(Domain.Orders.Models.Order order)
+        public OrderResp(Domain.Orders.Models.Order order)
         {
             this.Id = order.Id.ToString();
             this.Status = order.Status.ToString();
-            this.Items = order.OrderItems.Select(o => new OrderItemVM(o));
+            this.Items = order.OrderItems.Select(o => new OrderItemResp(o));
             this.CreatedDate = CreatedDate;
             this.ModifiedDate = ModifiedDate;
         }
@@ -36,15 +36,15 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
 
         #region Properties
 
-        public string Id { get; set; }
+        public string Id { get; private set; }
 
-        public string Status { get; set; }
+        public string Status { get; private set; }
 
-        public IEnumerable<OrderItemVM> Items { get; set; }
+        public IEnumerable<OrderItemResp> Items { get; private set; }
 
-        public DateTimeOffset CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; private set; }
 
-        public DateTimeOffset? ModifiedDate { get; set; }
+        public DateTimeOffset? ModifiedDate { get; private set; }
 
         #endregion Properties
 
@@ -52,7 +52,10 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.DataContracts.ViewModels
         {
             yield return this.Id;
             yield return this.Status;
-            yield return this.Items;
+            foreach (var item in this.Items)
+            {
+                yield return item;
+            }
             yield return this.CreatedDate;
             yield return this.ModifiedDate;
         }
