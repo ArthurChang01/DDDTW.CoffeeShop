@@ -61,7 +61,7 @@ namespace DDDTW.CoffeeShop.Order.Domain.Orders.Models
 
         #region Public Methods
 
-        public void ChangeItem(ChangeItemCmd cmd)
+        public void ChangeItem(ChangeItem cmd)
         {
             var newItemList = this.orderItems.Union(cmd.Items);
 

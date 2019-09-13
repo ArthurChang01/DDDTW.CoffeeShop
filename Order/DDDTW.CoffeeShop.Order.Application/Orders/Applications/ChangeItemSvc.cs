@@ -34,7 +34,7 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.Applications
             var order = this.repository.GetBy(id) ?? throw new ArgumentException();
             var items = this.itemsTranslator.Translate(request.Items);
 
-            order.ChangeItem(new ChangeItemCmd(items));
+            order.ChangeItem(new ChangeItem(items));
 
             this.repository.Save(order, order.DomainEvents);
 

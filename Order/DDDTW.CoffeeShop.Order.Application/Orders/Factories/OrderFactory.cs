@@ -31,7 +31,7 @@ namespace DDDTW.CoffeeShop.Order.Application.Orders.Factories
 
         private void When(OrderItemsChanged @event)
         {
-            this.aggregateRoot.ChangeItem(new ChangeItemCmd(@event.ChangedItems));
+            this.aggregateRoot.ChangeItem(new ChangeItem(@event.ChangedItems));
         }
 
         private void When(OrderStatusChanged @event)

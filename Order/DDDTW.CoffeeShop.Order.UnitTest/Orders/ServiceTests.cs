@@ -36,15 +36,12 @@ namespace DDDTW.CoffeeShop.Order.UnitTest.Orders
 
         public ServiceTests()
         {
-            var created = DateTimeOffset.Now;
-            var modified = DateTimeOffset.Now;
-
             this.id = new OrderId();
             this.item = new OrderItem(new Product("1", "Prod"), 10, 10);
             this.order = new Models.Order(id, OrderStatus.Initial, new[]
             {
                 this.item
-            }, created, modified);
+            }, DateTimeOffset.Now, DateTimeOffset.Now);
             this.idTranslator = new IdTranslator();
             this.itemsTranslator = new OrderItemsTranslator();
 

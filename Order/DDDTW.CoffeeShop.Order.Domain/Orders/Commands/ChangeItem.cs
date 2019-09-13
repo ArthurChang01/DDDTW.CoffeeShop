@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Order.Domain.Orders.Commands
 {
-    public class ChangeItemCmd
+    public class ChangeItem
     {
-        public ChangeItemCmd(IEnumerable<OrderItem> items)
+        public ChangeItem(IEnumerable<OrderItem> items)
         {
             this.Items = items;
         }
