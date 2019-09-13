@@ -3,33 +3,41 @@ using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 using System;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
+namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Responses
 {
-    public class InventoryConstraintVM : PropertyComparer<InventoryConstraintVM>
+    public class InventoryConstraintResp : PropertyComparer<InventoryConstraintResp>
     {
-        public InventoryConstraintVM()
+        #region Constructors
+
+        public InventoryConstraintResp()
         {
         }
 
-        public InventoryConstraintVM(InventoryConstraint constraint)
+        public InventoryConstraintResp(InventoryConstraint constraint)
         {
             this.Type = constraint.Type.ToString();
             this.Value = constraint.Value;
             this.DataTypeOfValue = constraint.DataTypeOfValue.ToString();
         }
 
-        public InventoryConstraintVM(InventoryConstraintType type, string value, TypeCode typeOfValue)
+        public InventoryConstraintResp(InventoryConstraintType type, string value, TypeCode typeOfValue)
         {
             this.Type = type.ToString();
             this.Value = value;
             this.DataTypeOfValue = typeOfValue.ToString();
         }
 
-        public string Type { get; set; }
+        #endregion Constructors
 
-        public string Value { get; set; }
+        #region Properties
 
-        public string DataTypeOfValue { get; set; }
+        public string Type { get; private set; }
+
+        public string Value { get; private set; }
+
+        public string DataTypeOfValue { get; private set; }
+
+        #endregion Properties
 
         #region Overrides of ValueObject<InventoryConstraintVM>
 

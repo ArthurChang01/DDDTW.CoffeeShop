@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DDDTW.CoffeeShop.Inventory.Application;
-using DDDTW.CoffeeShop.Inventory.WebAPI.Modules;
 using FluentValidation.AspNetCore;
 using MediatR.Extensions.Autofac.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -42,7 +41,7 @@ namespace DDDTW.CoffeeShop.Inventory.WebAPI
             var containerBuilder = new ContainerBuilder();
             containerBuilder.AddMediatR(typeof(InventoryApplication).Assembly);
 
-            containerBuilder.RegisterModule<AutofacModule>();
+            containerBuilder.RegisterModule<InventoryApplication>();
             containerBuilder.Populate(services);
 
             var container = containerBuilder.Build();

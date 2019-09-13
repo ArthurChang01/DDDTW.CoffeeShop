@@ -1,9 +1,9 @@
-﻿using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
+﻿using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Messages;
 using FluentValidation;
 
 namespace DDDTW.CoffeeShop.Inventory.WebAPI.Validations
 {
-    public class InboundCmdValidator : AbstractValidator<InboundCmd>
+    public class InboundCmdValidator : AbstractValidator<InboundMsg>
     {
         public InboundCmdValidator()
         {

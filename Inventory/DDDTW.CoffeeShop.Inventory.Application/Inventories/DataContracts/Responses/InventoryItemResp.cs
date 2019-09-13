@@ -2,17 +2,17 @@
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewModels
+namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Responses
 {
-    public class InventoryItemVM : PropertyComparer<InventoryItemVM>
+    public class InventoryItemResp : PropertyComparer<InventoryItemResp>
     {
         #region Constructors
 
-        public InventoryItemVM()
+        public InventoryItemResp()
         {
         }
 
-        public InventoryItemVM(InventoryItem item)
+        public InventoryItemResp(InventoryItem item)
         {
             this.Name = item.Name;
             this.SKU = item.SKU;
@@ -23,7 +23,7 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewM
             this.Capacity = item.Capacity;
         }
 
-        public InventoryItemVM(string name, string sku, decimal price, string manufacturer, ItemCategory category, string unitName, int capacity)
+        public InventoryItemResp(string name, string sku, decimal price, string manufacturer, ItemCategory category, string unitName, int capacity)
         {
             this.Name = name;
             this.SKU = sku;
@@ -36,19 +36,23 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.ViewM
 
         #endregion Constructors
 
-        public string Name { get; set; }
+        #region Properties
 
-        public string SKU { get; set; }
+        public string Name { get; private set; }
 
-        public decimal Price { get; set; }
+        public string SKU { get; private set; }
 
-        public string Manufacturer { get; set; }
+        public decimal Price { get; private set; }
 
-        public ItemCategory ItemCategory { get; set; }
+        public string Manufacturer { get; private set; }
 
-        public string InboundUnitName { get; set; }
+        public ItemCategory ItemCategory { get; private set; }
 
-        public int Capacity { get; set; }
+        public string InboundUnitName { get; private set; }
+
+        public int Capacity { get; private set; }
+
+        #endregion Properties
 
         #region Overrides of ValueObject<InventoryItemVM>
 

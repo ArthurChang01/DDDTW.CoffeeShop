@@ -1,10 +1,10 @@
-﻿using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
+﻿using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Messages;
 using FluentValidation;
 using System.Linq;
 
 namespace DDDTW.CoffeeShop.Inventory.WebAPI.Validations
 {
-    public class AddInventoryCmdValidator : AbstractValidator<AddInventoryCmd>
+    public class AddInventoryCmdValidator : AbstractValidator<AddInventoryMsg>
     {
         public AddInventoryCmdValidator()
         {

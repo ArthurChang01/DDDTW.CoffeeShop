@@ -1,14 +1,14 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Commands;
+﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
+using DDDTW.CoffeeShop.Inventory.Application.Inventories.DataContracts.Messages;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventory.Domain.Inventories.Models;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.ApplicationServices
 {
-    public class OutboundSvc : IRequestHandler<OutBoundCmd, Domain.Inventories.Models.Inventory>
+    public class OutboundSvc : IRequestHandler<OutBoundMsg, Domain.Inventories.Models.Inventory>
     {
         private readonly ITranslator<InventoryId, string> idTranslator;
         private readonly IInventoryRepository repository;
@@ -19,7 +19,7 @@ namespace DDDTW.CoffeeShop.Inventory.Application.Inventories.ApplicationServices
             this.repository = repository;
         }
 
-        public Task<Domain.Inventories.Models.Inventory> Handle(OutBoundCmd request, CancellationToken cancellationToken)
+        public Task<Domain.Inventories.Models.Inventory> Handle(OutBoundMsg request, CancellationToken cancellationToken)
         {
             var id = this.idTranslator.Translate(request.Id);
             var inventory = this.repository.GetBy(id);

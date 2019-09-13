@@ -1,4 +1,4 @@
-﻿namespace DDDTW.CoffeeShop.Inventory.WebAPI.Models
+﻿namespace DDDTW.CoffeeShop.Inventory.WebAPI.Models.RequestModels
 {
     public enum InventoryOperation
     {
