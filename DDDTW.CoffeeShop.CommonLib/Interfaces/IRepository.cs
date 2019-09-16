@@ -1,8 +1,8 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 
 namespace DDDTW.CoffeeShop.CommonLib.Interfaces
 {
@@ -24,7 +24,7 @@ namespace DDDTW.CoffeeShop.CommonLib.Interfaces
 
         long Count(Specification<T> by = null);
 
-        void Append(T entity, IEnumerable<IDomainEvent> events);
+        void Append(T entity);
 
         void Remove(T entity);
     }

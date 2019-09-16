@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GenFu" Version="1.5.6" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="FluentAssertions" Version="5.9.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="2.2.0" />
+    <PackageReference Include="NSubstitute" Version="4.2.1" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DDDTW.CoffeeShop.Orders.Application\DDDTW.CoffeeShop.Orders.Application.csproj" />
+    <ProjectReference Include="..\DDDTW.CoffeeShop.Orders.Domain\DDDTW.CoffeeShop.Orders.Domain.csproj" />
+    <ProjectReference Include="..\DDDTW.CoffeeShop.Orders.WebAPI\DDDTW.CoffeeShop.Orders.WebAPI.csproj" />
+  </ItemGroup>
+</Project>

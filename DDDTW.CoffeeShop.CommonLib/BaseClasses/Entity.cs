@@ -6,16 +6,11 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
     public abstract class Entity<TId> : IEntity<TId>, IEqualityComparer<Entity<TId>>
         where TId : class, IEntityId
     {
-        protected bool suppressEvent = false;
+        private bool suppressEvent = false;
 
         public TId Id { get; protected set; }
 
         protected readonly List<IDomainEvent> domainEvents = new List<IDomainEvent>();
-
-        public Entity(bool suppressEvent)
-        {
-            this.suppressEvent = suppressEvent;
-        }
 
         public IReadOnlyCollection<IDomainEvent> DomainEvents => this.domainEvents;
 
@@ -28,10 +23,9 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 
         protected virtual object Self => this;
 
-        public void UnsuppressEvent()
-        {
-            this.suppressEvent = false;
-        }
+        public void SuppressEvent() => suppressEvent = true;
+
+        public void UnsuppressedEvent() => suppressEvent = false;
 
         public override bool Equals(object obj)
         {

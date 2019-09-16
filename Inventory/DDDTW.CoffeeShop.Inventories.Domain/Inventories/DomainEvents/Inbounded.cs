@@ -1,0 +1,34 @@
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
+using System.Collections.Generic;
+
+namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
+{
+    public class Inbounded : DomainEvent<InventoryId>
+    {
+        #region Constructors
+
+        public Inbounded(InventoryId id, int amount, int qty)
+            : base(id)
+        {
+            this.Amount = amount;
+            this.Qty = qty;
+        }
+
+        #endregion Constructors
+
+        #region Properties
+
+        public int Amount { get; private set; }
+
+        public int Qty { get; private set; }
+
+        #endregion Properties
+
+        protected override IEnumerable<object> GetDerivedEventEqualityComponents()
+        {
+            yield return this.Amount;
+            yield return this.Qty;
+        }
+    }
+}

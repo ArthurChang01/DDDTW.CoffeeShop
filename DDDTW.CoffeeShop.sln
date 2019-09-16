@@ -19,23 +19,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Coffee.Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Coffee.UnitTest", "Coffee\DDDTW.CoffeeShop.Coffee.UnitTest\DDDTW.CoffeeShop.Coffee.UnitTest.csproj", "{B82B3AA2-F7A6-4058-BCE5-C6E9EEA7F89E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Order.Domain", "Order\DDDTW.CoffeeShop.Order.Domain\DDDTW.CoffeeShop.Order.Domain.csproj", "{4F5DBD2C-AC2D-44C7-8D7C-2E01AD7E3A29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Orders.Domain", "Order\DDDTW.CoffeeShop.Orders.Domain\DDDTW.CoffeeShop.Orders.Domain.csproj", "{4F5DBD2C-AC2D-44C7-8D7C-2E01AD7E3A29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Order.Application", "Order\DDDTW.CoffeeShop.Order.Application\DDDTW.CoffeeShop.Order.Application.csproj", "{715009E4-B4B2-41E8-A015-12F04741FC37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Orders.Application", "Order\DDDTW.CoffeeShop.Orders.Application\DDDTW.CoffeeShop.Orders.Application.csproj", "{715009E4-B4B2-41E8-A015-12F04741FC37}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Order.WebAPI", "Order\DDDTW.CoffeeShop.Order.WebAPI\DDDTW.CoffeeShop.Order.WebAPI.csproj", "{E601E52D-217F-4CD9-91A2-73DC0EFFEFF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Orders.WebAPI", "Order\DDDTW.CoffeeShop.Orders.WebAPI\DDDTW.CoffeeShop.Orders.WebAPI.csproj", "{E601E52D-217F-4CD9-91A2-73DC0EFFEFF6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Order.UnitTest", "Order\DDDTW.CoffeeShop.Order.UnitTest\DDDTW.CoffeeShop.Order.UnitTest.csproj", "{B85D38D6-E45F-4369-AE72-840AB941F2B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Orders.UnitTest", "Order\DDDTW.CoffeeShop.Orders.UnitTest\DDDTW.CoffeeShop.Orders.UnitTest.csproj", "{B85D38D6-E45F-4369-AE72-840AB941F2B6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inventory", "Inventory", "{96F6BB7D-648E-4628-A95A-8DDE1B20C94A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventory.Domain", "Inventory\DDDTW.CoffeeShop.Inventory.Domain\DDDTW.CoffeeShop.Inventory.Domain.csproj", "{E9747FB9-985E-45F8-A85E-E95FD1E4FB84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventories.Domain", "Inventory\DDDTW.CoffeeShop.Inventories.Domain\DDDTW.CoffeeShop.Inventories.Domain.csproj", "{E9747FB9-985E-45F8-A85E-E95FD1E4FB84}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventory.Application", "Inventory\DDDTW.CoffeeShop.Inventory.Application\DDDTW.CoffeeShop.Inventory.Application.csproj", "{1ED6B84D-0988-4E94-B64E-5E73F45E543A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventories.Application", "Inventory\DDDTW.CoffeeShop.Inventories.Application\DDDTW.CoffeeShop.Inventories.Application.csproj", "{1ED6B84D-0988-4E94-B64E-5E73F45E543A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventory.WebAPI", "Inventory\DDDTW.CoffeeShop.Inventory.WebAPI\DDDTW.CoffeeShop.Inventory.WebAPI.csproj", "{BD995D4C-9463-42A2-B8F1-20DA245DCFC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventories.WebAPI", "Inventory\DDDTW.CoffeeShop.Inventories.WebAPI\DDDTW.CoffeeShop.Inventories.WebAPI.csproj", "{BD995D4C-9463-42A2-B8F1-20DA245DCFC5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventory.UnitTest", "Inventory\DDDTW.CoffeeShop.Inventory.UnitTest\DDDTW.CoffeeShop.Inventory.UnitTest.csproj", "{728AFE9A-106B-4936-A351-DE9FC167CE7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDTW.CoffeeShop.Inventories.UnitTest", "Inventory\DDDTW.CoffeeShop.Inventories.UnitTest\DDDTW.CoffeeShop.Inventories.UnitTest.csproj", "{728AFE9A-106B-4936-A351-DE9FC167CE7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

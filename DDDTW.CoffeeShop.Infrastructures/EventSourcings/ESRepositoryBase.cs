@@ -1,6 +1,7 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using NEventStore;
+using SequentialGuid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,15 +88,28 @@ namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
             return this.projectionDb.LongCount(replacer);
         }
 
-        public void Append(T entity, IEnumerable<IDomainEvent> events)
+        public void Append(T entity)
         {
             using (var stream = eventStore.OpenStream(entity.Id.ToString()))
             {
-                stream.Add(new EventMessage { Body = events });
-                stream.CommitChanges(events.Last().EventId);
+                stream.Add(new EventMessage { Body = entity.DomainEvents });
+                stream.CommitChanges(SequentialGuidGenerator.Instance.NewGuid());
             }
 
-            this.projectionDb.Add(entity);
+            this.AddToProjectionDb(entity);
+        }
+
+        public void Append(IEnumerable<T> entities)
+        {
+            using (var stream = eventStore.OpenStream(entities.First().ToString()))
+            {
+                foreach (var entity in entities)
+                {
+                    stream.Add(new EventMessage() { Body = entity.DomainEvents });
+                    this.AddToProjectionDb(entity);
+                }
+                stream.CommitChanges(SequentialGuidGenerator.Instance.NewGuid());
+            }
         }
 
         public void Remove(T entity)
@@ -108,5 +122,18 @@ namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
         }
 
         #endregion Public methods
+
+        #region Private Methods
+
+        private void AddToProjectionDb(T entity)
+        {
+            var idx = this.projectionDb.FindIndex(o => o.Id == entity.Id);
+            if (idx == -1)
+                this.projectionDb.Add(entity);
+            else
+                this.projectionDb[idx] = entity;
+        }
+
+        #endregion Private Methods
     }
 }

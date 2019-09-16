@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
+using System;
 using System.Collections.Generic;
-using DDDTW.CoffeeShop.CommonLib.Interfaces;
 
 namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 {
@@ -35,7 +35,7 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return this.SeqNo;
-            yield return this.OccuredDate;
+            yield return this.OccuredDate.ToString("yyyyMMddHHmmSS");
             yield return this.Abbr;
         }
     }
