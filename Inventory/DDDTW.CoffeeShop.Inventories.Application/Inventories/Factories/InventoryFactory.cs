@@ -31,7 +31,7 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.Factories
 
         private void When(InventoryCreated @event)
         {
-            this.aggregateRoot = new Inventory(@event.EntityId, @event.Qty, @event.Item, @event.Constraints);
+            this.aggregateRoot = Inventory.Create(@event.EntityId, @event.Qty, @event.Item, @event.Constraints);
         }
 
         private void When(Inbounded @event)

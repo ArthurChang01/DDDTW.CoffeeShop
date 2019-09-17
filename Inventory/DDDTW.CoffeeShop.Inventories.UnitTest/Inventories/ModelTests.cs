@@ -26,7 +26,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public void CreateInventoryWithParameters()
         {
             var param = this.GetParameters(1, DateTimeOffset.Now.AddDays(-1));
-            var inventory = new Domain.Inventories.Models.Inventory(
+            var inventory = Inventory.Create(
                 param.id, 2, param.item, new[] { param.constraint });
 
             inventory.Id.ToString().Should().Be($"inv-{DateTimeOffset.Now.AddDays(-1):yyyyMMdd}-1");
@@ -40,7 +40,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public void CreateInventory_And_ConstraintTypeIsMaxQty_And_ConstraintValueTypeIsString_Then_ThrowException()
         {
             var param = this.GetParameters(1, DateTimeOffset.Now);
-            Action action = () => new Domain.Inventories.Models.Inventory(param.id, 1, param.item,
+            Action action = () => Inventory.Create(param.id, 1, param.item,
                  new[]
                  {
                     new InventoryConstraint(
@@ -58,7 +58,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         {
             var param = this.GetParameters();
 
-            Action action = () => new Inventory(param.id, -13, param.item, new[] { param.constraint });
+            Action action = () => Inventory.Create(param.id, -13, param.item, new[] { param.constraint });
 
             action.Should().Throw<AggregateException>()
                 .WithInnerException<NegativeQtyException>();
@@ -69,7 +69,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         {
             var param = this.GetParameters();
 
-            Action action = () => new Inventory(param.id, 27, null, new[] { param.constraint });
+            Action action = () => Inventory.Create(param.id, 27, null, new[] { param.constraint });
 
             action.Should().Throw<AggregateException>()
                 .WithInnerException<InventoryItemIsNullException>();
@@ -80,7 +80,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         {
             var param = this.GetParameters();
 
-            Action action = () => new Inventory(param.id, 27, param.item, null);
+            Action action = () => Inventory.Create(param.id, 27, param.item, null);
 
             action.Should().Throw<AggregateException>()
                 .WithInnerException<EmptyConstraintException>();
@@ -92,7 +92,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
             var param = this.GetParameters(maxQty: 50);
             var expectQty = 50;
 
-            var actual = new Inventory(param.id, 0, param.item, new[] { param.constraint });
+            var actual = Inventory.Create(param.id, 0, param.item, new[] { param.constraint });
             actual.Inbound(50);
             var evt = (Inbounded)actual.DomainEvents.Last();
 
@@ -105,7 +105,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public void When_InboundIsNegativeDigital_Then_ThrowAmountIncorrectException()
         {
             var param = this.GetParameters();
-            var actual = new Inventory(param.id, 0, param.item, new[] { param.constraint });
+            var actual = Inventory.Create(param.id, 0, param.item, new[] { param.constraint });
 
             Action action = () => actual.Inbound(-3);
 
@@ -116,7 +116,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public void Given_QtyIs26_And_MaxQtyIs50_When_InboundIs30_Then_ThrowOverQtyLimitationException()
         {
             var param = this.GetParameters(maxQty: 50);
-            var actual = new Inventory(param.id, 26, param.item, new[] { param.constraint });
+            var actual = Inventory.Create(param.id, 26, param.item, new[] { param.constraint });
 
             Action action = () => actual.Inbound(30);
 
@@ -129,7 +129,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
             var param = this.GetParameters();
             var expectQty = 35;
 
-            var actual = new Inventory(param.id, 37, param.item, new[] { param.constraint });
+            var actual = Inventory.Create(param.id, 37, param.item, new[] { param.constraint });
             actual.Outbound(2);
             var evt = (Outbounded)actual.DomainEvents.Last();
 
@@ -142,7 +142,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public void When_OutboundIsNegativeDigital_Then_ThrowAmountIncorrectException()
         {
             var param = this.GetParameters();
-            var actual = new Inventory(param.id, 0, param.item, new[] { param.constraint });
+            var actual = Inventory.Create(param.id, 0, param.item, new[] { param.constraint });
 
             Action action = () => actual.Outbound(-3);
 
@@ -153,7 +153,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public void Given_QtyIs17_When_OutboundIs38_Then_ThrowInventoryShortageException()
         {
             var param = this.GetParameters();
-            var actual = new Inventory(param.id, 17, param.item, new[] { param.constraint });
+            var actual = Inventory.Create(param.id, 17, param.item, new[] { param.constraint });
 
             Action action = () => actual.Outbound(38);
 

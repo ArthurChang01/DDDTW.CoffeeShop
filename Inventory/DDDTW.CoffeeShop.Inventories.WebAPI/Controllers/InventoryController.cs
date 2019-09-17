@@ -56,7 +56,7 @@ namespace DDDTW.CoffeeShop.Inventories.WebAPI.Controllers
         }
 
         [HttpPut("{id}/qty")]
-        public async Task<ActionResult> PutInbound([FromRoute] string id, [FromBody] ChangeQtyReq model)
+        public async Task<ActionResult> Put([FromRoute] string id, [FromBody] ChangeQtyReq model)
         {
             if (model.ActionMode == InventoryOperation.Inbound)
                 await this.mediator.Send(new InboundMsg() { Id = id, Amount = model.Amount });

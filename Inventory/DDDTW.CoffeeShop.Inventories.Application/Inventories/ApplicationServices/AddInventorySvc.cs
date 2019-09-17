@@ -31,7 +31,7 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             var id = this.repository.GenerateInventoryId();
             var item = this.itemTranslator.Translate(request.Item);
             var constraints = this.constraintTranslator.Translate(request.Constraints);
-            var inventory = new Inventory(id, request.Qty, item, constraints);
+            var inventory = Inventory.Create(id, request.Qty, item, constraints);
 
             this.repository.Save(inventory);
 

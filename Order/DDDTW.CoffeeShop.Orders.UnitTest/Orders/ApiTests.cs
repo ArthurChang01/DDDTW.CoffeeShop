@@ -44,7 +44,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var client = this.factory.CreateClient();
             var response = await client.GetAsync("api/Order?pageNo=1&pageSize=5");
-            var result = JsonConvert.DeserializeObject<IEnumerable<Domain.Orders.Models.Order>>(await response.Content.ReadAsStringAsync());
+            var result = JsonConvert.DeserializeObject<IEnumerable<Order>>(await response.Content.ReadAsStringAsync());
 
             response.EnsureSuccessStatusCode();
             result.Count().Should().Be(5);
@@ -57,7 +57,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             var client = this.factory.CreateClient();
 
             var response = await client.GetAsync($"api/Order/{orderId}");
-            var result = JsonConvert.DeserializeObject<Domain.Orders.Models.Order>(await response.Content.ReadAsStringAsync());
+            var result = JsonConvert.DeserializeObject<Order>(await response.Content.ReadAsStringAsync());
 
             response.EnsureSuccessStatusCode();
             result.Id.Should().Be(orderId);

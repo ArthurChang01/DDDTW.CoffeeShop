@@ -22,13 +22,13 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
             this.constraints = new List<InventoryConstraint>();
         }
 
-        public Inventory(InventoryId id, int qty, InventoryItem item, IEnumerable<InventoryConstraint> ieConstraints)
+        private Inventory(InventoryId id, int qty, InventoryItem item, IEnumerable<InventoryConstraint> constraint)
         {
             this.Id = id;
             this.Qty = qty;
             this.Item = item;
-            this.constraints = ieConstraints as List<InventoryConstraint> ??
-                               ieConstraints?.ToList() ??
+            this.constraints = constraint as List<InventoryConstraint> ??
+                               constraint?.ToList() ??
                                new List<InventoryConstraint>();
 
             InventoryPolicy.Verify(this);
@@ -49,6 +49,19 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
         #endregion Properties
 
         #region Public methods
+
+        public static Inventory Create(InventoryId id, int qty, InventoryItem item,
+            IEnumerable<InventoryConstraint> constraints, bool suppressEvent = false)
+        {
+            var inventory = new Inventory(id, qty, item, constraints);
+            InventoryPolicy.Verify(inventory);
+
+            if (suppressEvent) inventory.SuppressEvent();
+
+            inventory.ApplyEvent(new InventoryCreated(inventory.Id, inventory.Qty, inventory.Item, inventory.constraints));
+
+            return inventory;
+        }
 
         public void Inbound(int amount)
         {

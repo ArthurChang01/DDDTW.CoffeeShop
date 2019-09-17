@@ -26,7 +26,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public ServiceTests()
         {
             id = new InventoryId();
-            inventory = new Inventory(id, 10, new InventoryItem(),
+            inventory = Inventory.Create(id, 10, new InventoryItem(),
                 new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
 
             mockRepository = Substitute.For<IInventoryRepository>();
@@ -80,7 +80,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public async Task Inbound()
         {
-            var result = new Inventory(id, 10, new InventoryItem(),
+            var result = Inventory.Create(id, 10, new InventoryItem(),
                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
             var repository = NSubstitute.Substitute.For<IInventoryRepository>();
             repository.GetBy(Arg.Any<InventoryId>()).Returns(result);
@@ -95,7 +95,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public async Task Outbound()
         {
-            var result = new Inventory(id, 10, new InventoryItem(),
+            var result = Inventory.Create(id, 10, new InventoryItem(),
                 new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
             var repository = Substitute.For<IInventoryRepository>();
             repository.GetBy(Arg.Any<InventoryId>()).Returns(result);
