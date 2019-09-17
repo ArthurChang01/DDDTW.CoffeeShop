@@ -1,4 +1,5 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Exceptions;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Policies;
@@ -30,10 +31,6 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
             this.constraints = constraint as List<InventoryConstraint> ??
                                constraint?.ToList() ??
                                new List<InventoryConstraint>();
-
-            InventoryPolicy.Verify(this);
-
-            this.ApplyEvent(new InventoryCreated(this.Id, this.Qty, this.Item, this.constraints));
         }
 
         #endregion Constructors
@@ -50,39 +47,38 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
 
         #region Public methods
 
-        public static Inventory Create(InventoryId id, int qty, InventoryItem item,
-            IEnumerable<InventoryConstraint> constraints, bool suppressEvent = false)
+        public static Inventory Create(CreateInventory cmd)
         {
-            var inventory = new Inventory(id, qty, item, constraints);
+            var inventory = new Inventory(cmd.Id, cmd.Qty, cmd.Item, cmd.Constraints);
             InventoryPolicy.Verify(inventory);
 
-            if (suppressEvent) inventory.SuppressEvent();
+            if (cmd.SuppressEvent) inventory.SuppressEvent();
 
             inventory.ApplyEvent(new InventoryCreated(inventory.Id, inventory.Qty, inventory.Item, inventory.constraints));
 
             return inventory;
         }
 
-        public void Inbound(int amount)
+        public void Inbound(Inbound cmd)
         {
-            if (new AmountSpec(amount).IsSatisfy() == false)
+            if (new AmountSpec(cmd.Amount).IsSatisfy() == false)
                 throw new AmountIncorrectException();
-            if (new InboundSpec(this, amount).IsSatisfy() == false)
-                throw new OverQtyLimitationException(amount);
+            if (new InboundSpec(this, cmd.Amount).IsSatisfy() == false)
+                throw new OverQtyLimitationException(cmd.Amount);
 
-            this.Qty += amount;
-            this.ApplyEvent(new Inbounded(this.Id, amount, this.Qty));
+            this.Qty += cmd.Amount;
+            this.ApplyEvent(new Inbounded(this.Id, cmd.Amount, this.Qty));
         }
 
-        public void Outbound(int amount)
+        public void Outbound(Outbound cmd)
         {
-            if (new AmountSpec(amount).IsSatisfy() == false)
+            if (new AmountSpec(cmd.Amount).IsSatisfy() == false)
                 throw new AmountIncorrectException();
-            if (new OutboundSpec(this.Qty, amount).IsSatisfy() == false)
-                throw new InventoryShortageException(amount);
+            if (new OutboundSpec(this.Qty, cmd.Amount).IsSatisfy() == false)
+                throw new InventoryShortageException(cmd.Amount);
 
-            this.Qty -= amount;
-            this.ApplyEvent(new Outbounded(this.Id, amount, this.Qty));
+            this.Qty -= cmd.Amount;
+            this.ApplyEvent(new Outbounded(this.Id, cmd.Amount, this.Qty));
         }
 
         #endregion Public methods

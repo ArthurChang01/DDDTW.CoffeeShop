@@ -1,6 +1,7 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
+using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using MediatR;
@@ -27,7 +28,8 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.Applications
         {
             var id = this.repository.GenerateOrderId();
             var items = this.itemsTranslator.Translate(request.Items);
-            var order = Order.Create(id, items);
+            var cmd = new CreateOrder(id, request.TableNo, items);
+            var order = Order.Create(cmd);
 
             this.repository.Save(order);
 

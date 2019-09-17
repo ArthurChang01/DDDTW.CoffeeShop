@@ -1,19 +1,15 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
+using System;
 
 namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Exceptions
 {
-    public class EmptyConstraintException : Exception
+    public class EmptyConstraintException : DomainException
     {
-        private readonly string errorCode = $"Inv-{(int)InventoryErrorCode.ConstraintIsEmpty}";
-        private readonly string defaultErrorMessage = "Constraint is empty";
-
         public EmptyConstraintException(string errorMessage = "", Exception innerException = null)
-            : base(errorMessage, innerException)
+            : base(nameof(Inventory), InventoryErrorCode.ConstraintIsEmpty,
+                errorMessage ?? "Constraint is empty", innerException)
         {
-            this.defaultErrorMessage =
-                string.IsNullOrWhiteSpace(errorMessage) ? this.defaultErrorMessage : errorMessage;
         }
-
-        public override string Message => $"Code: {this.errorCode}, Message: {this.defaultErrorMessage}";
     }
 }

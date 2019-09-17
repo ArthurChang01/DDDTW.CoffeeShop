@@ -35,7 +35,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             this.id = new OrderId();
             this.item = new OrderItem(new Product("1", "Prod"), 10, 10);
-            this.order = new Order(id, OrderStatus.Initial, new[]
+            this.order = new Order(id, "0", OrderStatus.Initial, new[]
             {
                 this.item
             }, DateTimeOffset.Now, DateTimeOffset.Now);
@@ -78,7 +78,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public async Task CreateOrder()
         {
-            var msg = new CreateOrderMsg(new[]
+            var msg = new CreateOrderMsg("0", new[]
             {
                 new OrderItemResp(this.item),
             });
@@ -99,11 +99,11 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             {
                 new OrderItemResp(new ProductResp("3", "pp"), 11, 11)
             });
-            var result = new Order(this.id, OrderStatus.Initial, new[]
+            var result = new Order(this.id, "0", OrderStatus.Initial, new[]
             {
                 this.item
             }, DateTimeOffset.Now, DateTimeOffset.Now);
-            var expect = new Order(this.id, OrderStatus.Initial, new[]
+            var expect = new Order(this.id, "0", OrderStatus.Initial, new[]
             {
                 new OrderItem(new Product("3", "pp"), 11, 11),
             }, DateTimeOffset.Now, DateTimeOffset.Now);
@@ -164,7 +164,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         where T : IRequest<Unit>
         {
             var msg = msgFunc();
-            var result = new Order(this.id, oriStatus, new[]
+            var result = new Order(this.id, "0", oriStatus, new[]
             {
                 this.item
             }, DateTimeOffset.Now, DateTimeOffset.Now);

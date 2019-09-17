@@ -1,19 +1,15 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
+using System;
 
 namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Exceptions
 {
-    public class InventoryItemIsNullException : Exception
+    public class InventoryItemIsNullException : DomainException
     {
-        private readonly string errorCode = $"Inv-{(int)InventoryErrorCode.InventoryItemIsNull}";
-        private readonly string defaultErrorMessage = "Inventory Item can not be null";
-
-        public InventoryItemIsNullException(string errorMessage = "", Exception innerException = null)
-            : base(errorMessage, innerException)
+        public InventoryItemIsNullException(string errorMessage = null, Exception innerException = null)
+            : base(nameof(Inventory), InventoryErrorCode.InventoryItemIsNull,
+                errorMessage ?? "Inventory item can not be null", innerException)
         {
-            this.defaultErrorMessage =
-                string.IsNullOrWhiteSpace(errorMessage) ? this.defaultErrorMessage : errorMessage;
         }
-
-        public override string Message => $"Code: {this.errorCode}, Message: {this.defaultErrorMessage}";
     }
 }

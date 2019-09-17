@@ -15,6 +15,9 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Policies
             if (new OrderIdSpec(order.Id).IsSatisfy() == false)
                 exceptions.Add(new OrderIdIsNullException());
 
+            if (new OrderTableNoSpec(order.TableNo).IsSatisfy() == false)
+                exceptions.Add(new TableNoEmptyException());
+
             if (new OrderItemSpec(order.OrderItems).IsSatisfy() == false)
                 exceptions.Add(new OrderItemEmptyException());
 

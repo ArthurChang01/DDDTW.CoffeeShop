@@ -9,9 +9,10 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
     {
         #region Constructors
 
-        public OrderCreated(OrderId id, IEnumerable<OrderItem> orderItems, DateTimeOffset createdDate)
+        public OrderCreated(OrderId id, string tableNo, IEnumerable<OrderItem> orderItems, DateTimeOffset createdDate)
             : base(id)
         {
+            this.TableNo = tableNo;
             this.OrderItems = orderItems;
             this.CreatedDate = createdDate;
         }
@@ -23,6 +24,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         public IEnumerable<OrderItem> OrderItems { get; set; }
 
         public DateTimeOffset CreatedDate { get; set; }
+
+        public string TableNo { get; set; }
 
         #endregion Properties
 

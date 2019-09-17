@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
@@ -31,17 +32,20 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.Factories
 
         private void When(InventoryCreated @event)
         {
-            this.aggregateRoot = Inventory.Create(@event.EntityId, @event.Qty, @event.Item, @event.Constraints);
+            var cmd = new CreateInventory(@event.EntityId, @event.Qty, @event.Item, @event.Constraints);
+            this.aggregateRoot = Inventory.Create(cmd);
         }
 
         private void When(Inbounded @event)
         {
-            aggregateRoot.Inbound(@event.Amount);
+            var cmd = new Inbound(@event.Amount);
+            aggregateRoot.Inbound(cmd);
         }
 
         private void When(Outbounded @event)
         {
-            aggregateRoot.Outbound(@event.Amount);
+            var cmd = new Outbound(@event.Amount);
+            aggregateRoot.Outbound(cmd);
         }
     }
 }

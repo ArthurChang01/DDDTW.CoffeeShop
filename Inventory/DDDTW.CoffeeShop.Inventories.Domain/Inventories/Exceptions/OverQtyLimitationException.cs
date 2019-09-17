@@ -1,21 +1,16 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
+using System;
 
 namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Exceptions
 {
-    public class OverQtyLimitationException : Exception
+    public class OverQtyLimitationException : DomainException
     {
-        private readonly string errorCode = $"Inv-{(int)InventoryErrorCode.OverUpperBound}";
-        private readonly string defaultErrorMessage = "Qty is over upper-bound";
-
-        public OverQtyLimitationException(int amount, string errorMessage = "", Exception innerException = null)
-            : base(errorMessage, innerException)
+        public OverQtyLimitationException(int amount, string errorMessage = null, Exception innerException = null)
+            : base(nameof(Inventory), InventoryErrorCode.OverUpperBound,
+                errorMessage ?? "Qty is over upper bound", innerException)
         {
-            this.defaultErrorMessage =
-                string.IsNullOrWhiteSpace(errorMessage) ? this.defaultErrorMessage : errorMessage;
-
-            this.Data.Add("Parameter", amount);
+            this.Data.Add("Amount", amount);
         }
-
-        public override string Message => $"Code: {this.errorCode}, Message: {this.defaultErrorMessage}";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using MediatR;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServices
 {
-    public class InboundSvc : IRequestHandler<InboundMsg, Domain.Inventories.Models.Inventory>
+    public class InboundSvc : IRequestHandler<InboundMsg, Inventory>
     {
         private readonly ITranslator<InventoryId, string> idTranslator;
         private readonly IInventoryRepository repository;
@@ -19,11 +20,11 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             this.repository = repository;
         }
 
-        public Task<Domain.Inventories.Models.Inventory> Handle(InboundMsg request, CancellationToken cancellationToken)
+        public Task<Inventory> Handle(InboundMsg request, CancellationToken cancellationToken)
         {
             var id = this.idTranslator.Translate(request.Id);
             var inventory = this.repository.GetBy(id);
-            inventory.Inbound(request.Amount);
+            inventory.Inbound(new Inbound(request.Amount));
 
             this.repository.Save(inventory);
 

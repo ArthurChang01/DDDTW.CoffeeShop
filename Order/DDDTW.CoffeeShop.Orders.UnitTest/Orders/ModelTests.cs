@@ -41,7 +41,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public void CreateOrder_And_OrderIdIsNull()
         {
-            Action action = () => Order.Create(null, new[] { new OrderItem(), });
+            var cmd = new CreateOrder(null, "0", new[] { new OrderItem(), });
+            Action action = () => Order.Create(cmd);
 
             action.Should().ThrowExactly<AggregateException>()
                 .WithInnerException<OrderIdIsNullException>();
@@ -50,7 +51,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public void CreateOrder_And_OrderItemIsEmpty()
         {
-            Action action = () => Order.Create(new OrderId(), new List<OrderItem>());
+            var cmd = new CreateOrder(new OrderId(), "0", new List<OrderItem>());
+            Action action = () => Order.Create(cmd);
 
             action.Should().ThrowExactly<AggregateException>()
                 .WithInnerException<OrderItemEmptyException>();
@@ -83,7 +85,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var oriStatus = OrderStatus.Deliver;
             var errorMessage =
-                $"Code: {OrderErrorCode.StatusTransit}, Message: Can not transit order status from {oriStatus} to {OrderStatus.Processing}";
+                $"Code: Order-{OrderErrorCode.StatusTransit}, Message: Can not transit order status from {oriStatus} to {OrderStatus.Processing}";
             var order = this.GetOrderBuildingParam(status: OrderStatus.Deliver).Order;
 
             Action action = () => order.Process();
@@ -107,7 +109,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var oriStatus = OrderStatus.Closed;
             var errorMessage =
-                $"Code: {OrderErrorCode.StatusTransit}, Message: Can not transit order status from {oriStatus} to {OrderStatus.Deliver}";
+                $"Code: Order-{OrderErrorCode.StatusTransit}, Message: Can not transit order status from {oriStatus} to {OrderStatus.Deliver}";
             var order = this.GetOrderBuildingParam(status: oriStatus).Order;
 
             Action action = () => order.Deliver();
@@ -131,7 +133,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var oriStatus = OrderStatus.Processing;
             var errorMessage =
-                $"Code: {OrderErrorCode.StatusTransit}, Message: Can not transit order status from {oriStatus} to {OrderStatus.Closed}";
+                $"Code: Order-{OrderErrorCode.StatusTransit}, Message: Can not transit order status from {oriStatus} to {OrderStatus.Closed}";
             var order = this.GetOrderBuildingParam(status: oriStatus).Order;
 
             Action action = () => order.Closed();
@@ -158,7 +160,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var orderId = new OrderId(seqNo, occuredDate ?? DateTimeOffset.Now);
             var orderItem = new OrderItem(new Product(), qty ?? 0, price ?? 0);
-            var order = new Order(orderId, status ?? OrderStatus.Initial,
+            var order = new Order(orderId, "0", status ?? OrderStatus.Initial,
                 new[] { orderItem },
                 DateTimeOffset.Now, modifiedDate);
 

@@ -48,7 +48,7 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI.Controllers
         [ProducesDefaultResponseType(typeof(CreatedResult))]
         public async ValueTask<ActionResult> Post([FromBody] AddOrderReq req)
         {
-            var cmd = new CreateOrderMsg(this.TransformToOrderItemVM(req.Items));
+            var cmd = new CreateOrderMsg("0", this.TransformToOrderItemVM(req.Items));
             var vm = await this.mediator.Send(cmd);
             return this.Created(new Uri($"{this.Request.GetDisplayUrl()}/api/Order/{vm.Id}"), vm);
         }

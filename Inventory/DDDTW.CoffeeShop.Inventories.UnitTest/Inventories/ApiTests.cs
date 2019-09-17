@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.Inventories.Application.Inventories.Factories;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.Repositories;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using DDDTW.CoffeeShop.Inventories.WebAPI;
@@ -96,15 +97,13 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         private IInventoryRepository InventoryRepository()
         {
             var item = A.New<InventoryItem>();
-
             for (int i = 0; i < 10; i++)
             {
-                this.inventories.Add(Inventory.Create(new InventoryId(i, DateTimeOffset.Now),
-
-                    i, item, new List<InventoryConstraint>()
-                    {
-                        new InventoryConstraint( InventoryConstraintType.MaxQty, "10", TypeCode.Int32)
-                    }));
+                CreateInventory cmd = new CreateInventory(new InventoryId(i, DateTimeOffset.Now), i, item, new[]
+                {
+                    new InventoryConstraint(InventoryConstraintType.MaxQty, "10", TypeCode.Int32),
+                });
+                this.inventories.Add(Inventory.Create(cmd));
             }
 
             IInventoryRepository repository = new InventoryRepository(new InventoryFactory());

@@ -26,7 +26,8 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.Factories
 
         private void When(OrderCreated @event)
         {
-            this.aggregateRoot = new Order(@event.EntityId, OrderStatus.Initial, @event.OrderItems, @event.CreatedDate, null);
+            var cmd = new CreateOrder(@event.EntityId, @event.TableNo, @event.OrderItems);
+            this.aggregateRoot = Order.Create(cmd);
         }
 
         private void When(OrderItemsChanged @event)

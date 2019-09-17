@@ -1,18 +1,15 @@
-﻿using System;
+﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
+using System;
 
 namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Exceptions
 {
-    public class ConstraintValueIncorrectException : Exception
+    public class ConstraintValueIncorrectException : DomainException
     {
-        private readonly InventoryErrorCode errorCode = InventoryErrorCode.ConstraintValueIncorrect;
-        private readonly string defaultErrorMessage = "Constraint value and value type is not matched";
-
         public ConstraintValueIncorrectException(string errorMessage = null, Exception inner = null)
-            : base(errorMessage, inner)
+            : base(nameof(Inventory), InventoryErrorCode.ConstraintValueIncorrect,
+                errorMessage ?? "Constraint value and value type is not matched", inner)
         {
-            this.defaultErrorMessage = errorMessage ?? this.defaultErrorMessage;
         }
-
-        public override string Message => $"Code: {this.errorCode}, Message: {this.defaultErrorMessage}";
     }
 }

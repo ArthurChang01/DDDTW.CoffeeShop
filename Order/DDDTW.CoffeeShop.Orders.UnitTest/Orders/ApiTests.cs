@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.Orders.Application.Orders.Factories;
 using DDDTW.CoffeeShop.Orders.Application.Orders.Repositories;
+using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using DDDTW.CoffeeShop.Orders.WebAPI;
@@ -129,8 +130,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             for (int i = 0; i < 10; i++)
             {
-                orders.Add(Order.Create(new OrderId(i, DateTimeOffset.Now),
-                    A.ListOf<OrderItem>(5)));
+                CreateOrder cmd = new CreateOrder(new OrderId(i, DateTimeOffset.Now), i.ToString(), A.ListOf<OrderItem>(5));
+                orders.Add(Order.Create(cmd));
             }
 
             IOrderRepository repository = new OrderRepository(new OrderFactory());

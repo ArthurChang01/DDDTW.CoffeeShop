@@ -1,6 +1,7 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using MediatR;
@@ -31,7 +32,7 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             var id = this.repository.GenerateInventoryId();
             var item = this.itemTranslator.Translate(request.Item);
             var constraints = this.constraintTranslator.Translate(request.Constraints);
-            var inventory = Inventory.Create(id, request.Qty, item, constraints);
+            var inventory = Inventory.Create(new CreateInventory(id, request.Qty, item, constraints));
 
             this.repository.Save(inventory);
 

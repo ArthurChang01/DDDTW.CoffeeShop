@@ -19,14 +19,16 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
         public Order()
         {
             this.Id = new OrderId();
+            this.TableNo = string.Empty;
             this.Status = OrderStatus.Initial;
             this.orderItems = new List<OrderItem>();
             this.CreatedDate = DateTimeOffset.Now;
         }
 
-        public Order(OrderId id, OrderStatus status, IEnumerable<OrderItem> items, DateTimeOffset created, DateTimeOffset? modified = null)
+        public Order(OrderId id, string tableNo, OrderStatus status, IEnumerable<OrderItem> items, DateTimeOffset created, DateTimeOffset? modified = null)
         {
             this.Id = id;
+            this.TableNo = tableNo;
             this.Status = status;
             this.orderItems = items as List<OrderItem> ??
                               items?.ToList() ??
@@ -38,6 +40,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
         #endregion Constructors
 
         #region Properties
+
+        public string TableNo { get; private set; }
 
         public OrderStatus Status { get; private set; }
 
@@ -53,14 +57,14 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
 
         #region Public Methods
 
-        public static Order Create(OrderId id, IEnumerable<OrderItem> items, bool suppressEvent = false)
+        public static Order Create(CreateOrder cmd)
         {
-            var order = new Order(id, OrderStatus.Initial, items, DateTimeOffset.Now);
+            var order = new Order(cmd.Id, cmd.TableNo, OrderStatus.Initial, cmd.Items, DateTimeOffset.Now);
             OrderPolicy.Verify(order);
 
-            if (suppressEvent) order.SuppressEvent();
+            if (cmd.SuppressEvent) order.SuppressEvent();
 
-            order.ApplyEvent(new OrderCreated(order.Id, order.OrderItems, order.CreatedDate));
+            order.ApplyEvent(new OrderCreated(order.Id, order.TableNo, order.OrderItems, order.CreatedDate));
 
             return order;
         }
@@ -125,7 +129,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
             this.Status = status;
             this.ModifiedDate = DateTimeOffset.Now;
 
-            this.ApplyEvent(new OrderStatusChanged(this.Id, originalStatus, this.Status));
+            this.ApplyEvent(new OrderStatusChanged(this.Id, originalStatus, this.Status, this.ModifiedDate.Value));
         }
 
         #endregion Private Methods

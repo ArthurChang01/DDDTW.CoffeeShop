@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
+using System;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
@@ -8,11 +9,12 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
     {
         #region Constructors
 
-        public OrderStatusChanged(OrderId id, OrderStatus lastStatus, OrderStatus curStatus)
+        public OrderStatusChanged(OrderId id, OrderStatus lastStatus, OrderStatus curStatus, DateTimeOffset modifiedDate)
             : base(id)
         {
             this.LastStatus = lastStatus;
             this.CurrentStatus = curStatus;
+            this.ModifiedDate = modifiedDate;
         }
 
         #endregion Constructors
@@ -22,6 +24,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         public OrderStatus LastStatus { get; set; }
 
         public OrderStatus CurrentStatus { get; set; }
+
+        public DateTimeOffset ModifiedDate { get; set; }
 
         #endregion Properties
 

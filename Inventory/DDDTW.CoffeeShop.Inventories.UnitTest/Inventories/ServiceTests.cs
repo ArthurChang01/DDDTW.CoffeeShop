@@ -3,6 +3,7 @@ using DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServices;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DomainServices;
+using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using FluentAssertions;
@@ -26,8 +27,11 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public ServiceTests()
         {
             id = new InventoryId();
-            inventory = Inventory.Create(id, 10, new InventoryItem(),
-                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
+            var createdCmd = new CreateInventory(id, 10, new InventoryItem(), new[]
+            {
+                new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32),
+            });
+            inventory = Inventory.Create(createdCmd);
 
             mockRepository = Substitute.For<IInventoryRepository>();
             mockRepository.GenerateInventoryId().Returns(id);
@@ -67,12 +71,12 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
             var item = new InventoryItemResp("name", "sku", 20, "manu", ItemCategory.Milk, "name", 10);
             var constraint = new InventoryConstraintResp(InventoryConstraintType.MaxQty, "10", TypeCode.Int32);
             var expect = new InventoryResp(this.id.ToString(), 10, item, new[] { constraint });
-            var cmd = new AddInventoryMsg(10, item, new[] { constraint });
+            var msg = new AddInventoryMsg(10, item, new[] { constraint });
             var itemTranslator = new InventoryItemsTranslator();
             var constraintsTranslator = new InventoryConstrainsTranslator();
 
             var svc = new AddInventorySvc(itemTranslator, constraintsTranslator, mockRepository);
-            var actual = await svc.Handle(cmd, new CancellationToken());
+            var actual = await svc.Handle(msg, new CancellationToken());
 
             actual.Should().Be(expect);
         }
@@ -80,14 +84,17 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public async Task Inbound()
         {
-            var result = Inventory.Create(id, 10, new InventoryItem(),
-               new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
+            var createdCmd = new CreateInventory(id, 10, new InventoryItem(), new[]
+            {
+                new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32),
+            });
+            var result = Inventory.Create(createdCmd);
             var repository = NSubstitute.Substitute.For<IInventoryRepository>();
             repository.GetBy(Arg.Any<InventoryId>()).Returns(result);
-            var cmd = new InboundMsg() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0", Amount = 10 };
+            var msg = new InboundMsg() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0", Amount = 10 };
 
             var svc = new InboundSvc(new IdTranslator(), repository);
-            var actual = await svc.Handle(cmd, new CancellationToken());
+            var actual = await svc.Handle(msg, new CancellationToken());
 
             actual.Qty.Should().Be(20);
         }
@@ -95,14 +102,17 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public async Task Outbound()
         {
-            var result = Inventory.Create(id, 10, new InventoryItem(),
-                new[] { new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32) });
+            var createdCmd = new CreateInventory(id, 10, new InventoryItem(), new[]
+            {
+                new InventoryConstraint(InventoryConstraintType.MaxQty, "20", TypeCode.Int32),
+            });
+            var result = Inventory.Create(createdCmd);
             var repository = Substitute.For<IInventoryRepository>();
             repository.GetBy(Arg.Any<InventoryId>()).Returns(result);
-            var cmd = new OutBoundMsg() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0", Amount = 5 };
+            var msg = new OutBoundMsg() { Id = $"inv-{DateTimeOffset.Now:yyyyMMdd}-0", Amount = 5 };
 
             var svc = new OutboundSvc(new IdTranslator(), repository);
-            var actual = await svc.Handle(cmd, new CancellationToken());
+            var actual = await svc.Handle(msg, new CancellationToken());
 
             actual.Qty.Should().Be(5);
         }
