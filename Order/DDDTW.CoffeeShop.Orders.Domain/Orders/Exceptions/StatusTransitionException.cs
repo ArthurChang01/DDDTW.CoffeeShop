@@ -7,7 +7,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Exceptions
     public class StatusTransitionException : DomainException
     {
         public StatusTransitionException(OrderStatus curStatus, OrderStatus targetStatus, string errorMessage = null, Exception inner = null)
-            : base("Order", OrderErrorCode.StatusTransit,
+            : base(nameof(Order), OrderErrorCode.StatusTransit,
                 errorMessage ?? $"Can not transit order status from {curStatus} to {targetStatus}", inner)
         {
         }

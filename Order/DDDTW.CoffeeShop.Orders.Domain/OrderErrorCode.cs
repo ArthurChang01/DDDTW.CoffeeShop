@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 
-namespace DDDTW.CoffeeShop.Orders.Domain.Orders
+namespace DDDTW.CoffeeShop.Orders.Domain
 {
     public class OrderErrorCode : Enumeration
     {

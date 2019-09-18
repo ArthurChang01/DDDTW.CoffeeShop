@@ -15,11 +15,11 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public void CreateInventory()
         {
-            Domain.Inventories.Models.Inventory inventory = new Domain.Inventories.Models.Inventory();
+            Inventory inventory = new Inventory();
 
             inventory.Id.ToString().Should().Be($"inv-{DateTimeOffset.Now:yyyyMMdd}-0");
             inventory.Qty.Should().Be(0);
-            inventory.Item.Should().Be(new Domain.Inventories.Models.InventoryItem());
+            inventory.Item.Should().Be(new InventoryItem());
             inventory.Constraint.Count.Should().Be(0);
         }
 

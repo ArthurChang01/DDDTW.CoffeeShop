@@ -1,4 +1,4 @@
-﻿using DDDTW.CoffeeShop.Orders.Domain.Orders;
+﻿using DDDTW.CoffeeShop.Orders.Domain;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Exceptions;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;

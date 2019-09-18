@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 
-namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories
+namespace DDDTW.CoffeeShop.Inventories.Domain
 {
     public class InventoryErrorCode : Enumeration
     {
