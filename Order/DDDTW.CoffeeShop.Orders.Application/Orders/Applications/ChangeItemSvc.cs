@@ -28,17 +28,17 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.Applications
             this.repository = repository;
         }
 
-        public Task<Unit> Handle(ChangeItemMsg request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ChangeItemMsg request, CancellationToken cancellationToken)
         {
             var id = this.idTranslator.Translate(request.Id);
-            var order = this.repository.GetBy(id) ?? throw new ArgumentException();
+            var order = await this.repository.GetBy(id) ?? throw new ArgumentException();
             var items = this.itemsTranslator.Translate(request.Items);
 
             order.ChangeItem(new ChangeItem(items));
 
-            this.repository.Save(order);
+            await this.repository.Save(order);
 
-            return Task.FromResult(new Unit());
+            return new Unit();
         }
     }
 }

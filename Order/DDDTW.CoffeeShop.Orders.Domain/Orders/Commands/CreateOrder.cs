@@ -5,20 +5,20 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Commands
 {
     public class CreateOrder
     {
-        public CreateOrder(OrderId id, string tableNo, IEnumerable<OrderItem> items, bool suppressEvent = false)
+        public CreateOrder(OrderId id, string tableNo, OrderStatus status, IEnumerable<OrderItem> items)
         {
             this.Id = id;
             this.TableNo = tableNo;
+            this.Status = status;
             this.Items = items;
-            this.SuppressEvent = suppressEvent;
         }
 
-        public OrderId Id { get; set; }
+        public OrderId Id { get; private set; }
 
-        public string TableNo { get; set; }
+        public string TableNo { get; private set; }
 
-        public IEnumerable<OrderItem> Items { get; set; }
+        public OrderStatus Status { get; private set; }
 
-        public bool SuppressEvent { get; } = false;
+        public IEnumerable<OrderItem> Items { get; private set; }
     }
 }

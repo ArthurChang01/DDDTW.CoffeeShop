@@ -1,4 +1,4 @@
-﻿using DDDTW.CoffeeShop.Orders.Application.Orders.Factories;
+﻿using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
 using DDDTW.CoffeeShop.Orders.Application.Orders.Repositories;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Order = DDDTW.CoffeeShop.Orders.Domain.Orders.Models.Order;
 
 namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
 {
@@ -130,11 +131,12 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             for (int i = 0; i < 10; i++)
             {
-                CreateOrder cmd = new CreateOrder(new OrderId(i, DateTimeOffset.Now), i.ToString(), A.ListOf<OrderItem>(5));
+                CreateOrder cmd = new CreateOrder(new OrderId(i, DateTimeOffset.Now), i.ToString(), OrderStatus.Initial,
+                    A.ListOf<OrderItem>(5));
                 orders.Add(Order.Create(cmd));
             }
 
-            IOrderRepository repository = new OrderRepository(new OrderFactory());
+            IOrderRepository repository = new OrderRepository(new ESRepositoryBase<Order, OrderId>());
             foreach (var order in orders)
             {
                 repository.Save(order);

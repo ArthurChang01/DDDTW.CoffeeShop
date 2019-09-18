@@ -1,17 +1,18 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces
 {
     public interface IInventoryRepository
     {
-        InventoryId GenerateInventoryId();
+        Task<InventoryId> GenerateInventoryId();
 
-        Models.Inventory GetBy(InventoryId id);
+        Task<Inventory> GetBy(InventoryId id);
 
-        IEnumerable<Models.Inventory> Get(Specification<Models.Inventory> spec, int pageNo = 1, int pageSize = 5);
+        Task<IEnumerable<Inventory>> Get(Specification<Inventory> spec, int pageNo = 1, int pageSize = 5);
 
-        void Save(Models.Inventory inventory);
+        Task Save(Inventory inventory);
     }
 }

@@ -1,39 +1,42 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
-using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
+using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Orders.Application.Orders.Repositories
 {
-    public class OrderRepository : ESRepositoryBase<Order, OrderId>, IOrderRepository
+    public class OrderRepository : IOrderRepository
     {
-        public OrderRepository(IOrderFactory factory)
-            : base(factory)
+        private readonly IRepository<Order, OrderId> repository;
+
+        public OrderRepository(IRepository<Order, OrderId> repository)
         {
+            this.repository = repository;
         }
 
-        public OrderId GenerateOrderId()
+        public async Task<OrderId> GenerateOrderId()
         {
-            return new OrderId(base.Count(), DateTimeOffset.Now);
+            return new OrderId(await this.repository.Count(), DateTimeOffset.Now);
         }
 
-        public IEnumerable<Order> Get(Specification<Order> specification, int pageNo, int pageSize)
+        public async Task<IEnumerable<Order>> Get(Specification<Order> specification, int pageNo, int pageSize)
         {
-            return base.Get(s => s, specification)
+            return (await this.repository.Get(s => s, specification))
                 .Skip((pageNo - 1) * pageSize).Take(pageSize);
         }
 
-        public Order GetBy(OrderId id)
+        public Task<Order> GetBy(OrderId id)
         {
-            return base.Get(id);
+            return this.repository.Get(id);
         }
 
-        public void Save(Order order)
+        public Task Save(Order order)
         {
-            base.Append(order);
+            return this.repository.Create(order);
         }
     }
 }

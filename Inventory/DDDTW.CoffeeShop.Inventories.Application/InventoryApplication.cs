@@ -2,7 +2,6 @@
 using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DomainServices;
-using DDDTW.CoffeeShop.Inventories.Application.Inventories.Factories;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.Repositories;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
@@ -20,7 +19,6 @@ namespace DDDTW.CoffeeShop.Inventories.Application
             builder.RegisterType<InventoryConstrainsTranslator>()
                 .As<ITranslator<IEnumerable<InventoryConstraint>, IEnumerable<InventoryConstraintResp>>>();
 
-            builder.RegisterType<InventoryFactory>().As<IInventoryFactory>();
             builder.RegisterType<InventoryRepository>().As<IInventoryRepository>().SingleInstance();
         }
     }

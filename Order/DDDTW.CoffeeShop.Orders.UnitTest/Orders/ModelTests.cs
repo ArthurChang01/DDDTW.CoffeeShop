@@ -28,20 +28,18 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public void CreateOrderWithParameter()
         {
-            var order = this.GetOrderBuildingParam(status: OrderStatus.Deliver,
-                modifiedDate: DateTimeOffset.Now).Order;
+            var order = this.GetOrderBuildingParam(status: OrderStatus.Deliver).Order;
 
             order.Id.ToString().Should().Be($"ord-{DateTimeOffset.Now:yyyyMMdd}-0");
             order.Status.Should().Be(OrderStatus.Deliver);
             order.OrderItems.First().Should().Be(new OrderItem());
             order.CreatedDate.ToString("yyyyMMddHHmm").Should().Be(DateTimeOffset.Now.ToString("yyyyMMddHHmm"));
-            order.ModifiedDate?.ToString("yyyyMMddHHmm").Should().Be(DateTimeOffset.Now.ToString("yyyyMMddHHmm"));
         }
 
         [Test]
         public void CreateOrder_And_OrderIdIsNull()
         {
-            var cmd = new CreateOrder(null, "0", new[] { new OrderItem(), });
+            var cmd = new CreateOrder(null, "0", OrderStatus.Initial, new[] { new OrderItem(), });
             Action action = () => Order.Create(cmd);
 
             action.Should().ThrowExactly<AggregateException>()
@@ -51,7 +49,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public void CreateOrder_And_OrderItemIsEmpty()
         {
-            var cmd = new CreateOrder(new OrderId(), "0", new List<OrderItem>());
+            var cmd = new CreateOrder(new OrderId(), "0", OrderStatus.Initial, new List<OrderItem>());
+
             Action action = () => Order.Create(cmd);
 
             action.Should().ThrowExactly<AggregateException>()
@@ -155,16 +154,14 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         private (OrderId OrderId, OrderItem OrderItem, Order Order) GetOrderBuildingParam(
             int seqNo = 0, DateTimeOffset? occuredDate = null,
             OrderStatus? status = OrderStatus.Initial,
-            int? qty = null, decimal? price = null,
-            DateTimeOffset? modifiedDate = null)
+            int? qty = null, decimal? price = null)
         {
             var orderId = new OrderId(seqNo, occuredDate ?? DateTimeOffset.Now);
-            var orderItem = new OrderItem(new Product(), qty ?? 0, price ?? 0);
-            var order = new Order(orderId, "0", status ?? OrderStatus.Initial,
-                new[] { orderItem },
-                DateTimeOffset.Now, modifiedDate);
+            var item = new OrderItem(new Product(), qty ?? 0, price ?? 0);
+            var cmd = new CreateOrder(orderId, "0", status ?? OrderStatus.Initial, new[] { item });
+            var order = Order.Create(cmd);
 
-            return (orderId, orderItem, order);
+            return (orderId, item, order);
         }
     }
 }

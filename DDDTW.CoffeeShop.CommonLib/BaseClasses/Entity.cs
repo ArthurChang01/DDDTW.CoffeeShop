@@ -23,9 +23,9 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 
         protected virtual object Self => this;
 
-        public void SuppressEvent() => suppressEvent = true;
+        protected void SuppressEvent() => suppressEvent = true;
 
-        public void UnsuppressedEvent() => suppressEvent = false;
+        protected void UnsuppressedEvent() => suppressEvent = false;
 
         public override bool Equals(object obj)
         {

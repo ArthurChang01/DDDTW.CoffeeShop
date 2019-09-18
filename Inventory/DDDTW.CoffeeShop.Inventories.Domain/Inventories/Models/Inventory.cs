@@ -1,9 +1,11 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Exceptions;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Policies;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Specifications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +13,7 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
 {
     public class Inventory : AggregateRoot<InventoryId>
     {
-        private readonly List<InventoryConstraint> constraints;
+        private List<InventoryConstraint> constraints;
 
         #region Constructors
 
@@ -33,6 +35,24 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
                                new List<InventoryConstraint>();
         }
 
+        public Inventory(IEnumerable<IDomainEvent> events)
+        {
+            if (events == null || events.Any() == false)
+                throw new ArgumentException("Events can not be empty or null");
+
+            var projections = new Dictionary<string, Action<IDomainEvent>>()
+            {
+                {nameof(InventoryCreated), evt => this.When((InventoryCreated)evt) },
+                {nameof(Inbounded), evt => this.When((Inbounded)evt) },
+                {nameof(Outbounded), evt => this.When((Outbounded)evt) }
+            };
+
+            foreach (var @event in events)
+            {
+                projections[@event.GetType().Name](@event);
+            }
+        }
+
         #endregion Constructors
 
         #region Properties
@@ -51,8 +71,6 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
         {
             var inventory = new Inventory(cmd.Id, cmd.Qty, cmd.Item, cmd.Constraints);
             InventoryPolicy.Verify(inventory);
-
-            if (cmd.SuppressEvent) inventory.SuppressEvent();
 
             inventory.ApplyEvent(new InventoryCreated(inventory.Id, inventory.Qty, inventory.Item, inventory.constraints));
 
@@ -82,5 +100,27 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
         }
 
         #endregion Public methods
+
+        #region Event Projection Methods
+
+        private void When(InventoryCreated @event)
+        {
+            this.Id = @event.EntityId;
+            this.Qty = @event.Qty;
+            this.Item = @event.Item;
+            this.constraints = @event.Constraints?.ToList() ?? new List<InventoryConstraint>();
+        }
+
+        private void When(Inbounded @event)
+        {
+            this.Qty += @event.Qty;
+        }
+
+        private void When(Outbounded @event)
+        {
+            this.Qty -= @event.Qty;
+        }
+
+        #endregion Event Projection Methods
     }
 }

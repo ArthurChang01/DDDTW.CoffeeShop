@@ -20,15 +20,15 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             this.repository = repository;
         }
 
-        public Task<Inventory> Handle(OutBoundMsg request, CancellationToken cancellationToken)
+        public async Task<Inventory> Handle(OutBoundMsg request, CancellationToken cancellationToken)
         {
             var id = this.idTranslator.Translate(request.Id);
-            var inventory = this.repository.GetBy(id);
+            var inventory = await this.repository.GetBy(id);
             inventory.Outbound(new Outbound(request.Amount));
 
-            this.repository.Save(inventory);
+            await this.repository.Save(inventory);
 
-            return Task.FromResult(inventory);
+            return inventory;
         }
     }
 }

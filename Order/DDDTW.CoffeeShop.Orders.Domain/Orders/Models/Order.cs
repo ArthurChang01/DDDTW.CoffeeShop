@@ -1,4 +1,5 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
+using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Exceptions;
@@ -12,7 +13,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
 {
     public class Order : AggregateRoot<OrderId>
     {
-        private readonly List<OrderItem> orderItems;
+        private List<OrderItem> orderItems;
 
         #region Constructors
 
@@ -25,7 +26,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
             this.CreatedDate = DateTimeOffset.Now;
         }
 
-        public Order(OrderId id, string tableNo, OrderStatus status, IEnumerable<OrderItem> items, DateTimeOffset created, DateTimeOffset? modified = null)
+        private Order(OrderId id, string tableNo, OrderStatus status, IEnumerable<OrderItem> items, DateTimeOffset created, DateTimeOffset? modified = null)
         {
             this.Id = id;
             this.TableNo = tableNo;
@@ -35,6 +36,21 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
                               new List<OrderItem>();
             this.CreatedDate = created;
             this.ModifiedDate = modified;
+        }
+
+        public Order(IEnumerable<IDomainEvent> events)
+        {
+            var projections = new Dictionary<string, Action<IDomainEvent>>()
+           {
+               {nameof(OrderCreated), evt => this.When((OrderCreated)evt) },
+               {nameof(OrderItemsChanged), evt => this.When((OrderItemsChanged)evt) },
+               {nameof(OrderStatusChanged), evt => this.When((OrderStatusChanged)evt) }
+           };
+
+            foreach (var @event in events)
+            {
+                projections[@event.GetType().Name](@event);
+            }
         }
 
         #endregion Constructors
@@ -59,10 +75,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
 
         public static Order Create(CreateOrder cmd)
         {
-            var order = new Order(cmd.Id, cmd.TableNo, OrderStatus.Initial, cmd.Items, DateTimeOffset.Now);
+            var order = new Order(cmd.Id, cmd.TableNo, cmd.Status, cmd.Items, DateTimeOffset.Now);
             OrderPolicy.Verify(order);
-
-            if (cmd.SuppressEvent) order.SuppressEvent();
 
             order.ApplyEvent(new OrderCreated(order.Id, order.TableNo, order.OrderItems, order.CreatedDate));
 
@@ -78,7 +92,9 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
             this.orderItems.Clear();
             this.orderItems.AddRange(newItemList);
 
-            this.ApplyEvent(new OrderItemsChanged(this.Id, cmd.Items));
+            this.ModifiedDate = DateTimeOffset.Now;
+
+            this.ApplyEvent(new OrderItemsChanged(this.Id, cmd.Items, this.ModifiedDate.Value));
         }
 
         public void Process()
@@ -111,6 +127,49 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
         }
 
         #endregion Public Methods
+
+        #region Event Projection Methods
+
+        public void When(OrderCreated @event)
+        {
+            this.Id = @event.EntityId;
+            this.TableNo = @event.TableNo;
+            this.Status = OrderStatus.Initial;
+            this.orderItems = @event.OrderItems?.ToList() ?? new List<OrderItem>();
+            this.CreatedDate = @event.CreatedDate;
+        }
+
+        public void When(OrderItemsChanged @event)
+        {
+            this.orderItems = @event.ChangedItems?.ToList() ?? new List<OrderItem>();
+            this.ModifiedDate = @event.ModifiedDate;
+        }
+
+        public void When(OrderStatusChanged @event)
+        {
+            this.SuppressEvent();
+            switch (@event.CurrentStatus)
+            {
+                case OrderStatus.Processing:
+                    this.Process();
+                    break;
+
+                case OrderStatus.Deliver:
+                    this.Deliver();
+                    break;
+
+                case OrderStatus.Closed:
+                    this.Closed();
+                    break;
+
+                case OrderStatus.Cancel:
+                    this.Cancel();
+                    break;
+            }
+            this.UnsuppressedEvent();
+        }
+
+        #endregion Event Projection Methods
 
         #region Private Methods
 

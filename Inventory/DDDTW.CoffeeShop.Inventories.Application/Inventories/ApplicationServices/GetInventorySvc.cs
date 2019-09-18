@@ -22,13 +22,13 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             this.repository = repository;
         }
 
-        public Task<InventoryResp> Handle(GetInventoryMsg request, CancellationToken cancellationToken)
+        public async Task<InventoryResp> Handle(GetInventoryMsg request, CancellationToken cancellationToken)
         {
             InventoryId id = idTranslator.Translate(request.Id);
-            var inventory = this.repository.GetBy(id) ?? throw new ArgumentException();
+            var inventory = await this.repository.GetBy(id) ?? throw new ArgumentException();
             var vm = new InventoryResp(inventory);
 
-            return Task.FromResult(vm);
+            return vm;
         }
     }
 }

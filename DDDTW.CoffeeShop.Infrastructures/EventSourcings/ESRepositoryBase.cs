@@ -6,24 +6,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
 {
-    public abstract class ESRepositoryBase<T, TId> : IRepository<T, TId>
-            where T : AggregateRoot<TId>, new()
+    public sealed class ESRepositoryBase<T, TId> : IRepository<T, TId>
+            where T : AggregateRoot<TId>
             where TId : class, IEntityId
     {
         #region Fields
 
         private readonly IStoreEvents eventStore = null;
         private readonly List<T> projectionDb = new List<T>();
-        private readonly IFactory<T, TId> factory;
 
         #endregion Fields
 
         #region Contructors
 
-        protected ESRepositoryBase()
+        public ESRepositoryBase()
         {
             this.eventStore = Wireup.Init()
                 .UsingInMemoryPersistence()
@@ -31,12 +31,6 @@ namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
                 .UsingBinarySerialization()
                 .Compress()
                 .Build();
-        }
-
-        protected ESRepositoryBase(in IFactory<T, TId> factory)
-            : this()
-        {
-            this.factory = factory;
         }
 
         #endregion Contructors
@@ -49,76 +43,97 @@ namespace DDDTW.CoffeeShop.Infrastructures.EventSourcings
 
         #region Public methods
 
-        public T Get(TId id)
+        public Task<T> Get(TId id)
         {
             using (var stream = eventStore.OpenStream(id.ToString(), 0, int.MaxValue))
             {
                 if (stream.CommittedEvents.Count == 0)
-                    return new T();
-                var events = stream.CommittedEvents.Select(o => o.Body).OfType<IEnumerable<IDomainEvent>>().SelectMany(o => o);
-                return this.factory.Create(events);
+                    return null;
+
+                var events = stream.CommittedEvents.Select(o => o.Body).OfType<IEnumerable<IDomainEvent>>().SelectMany(o => o).ToList();
+
+                var instance = Activator.CreateInstance(typeof(T), args: new object[] { events }) as T;
+                return Task.FromResult(instance);
             }
         }
 
-        public IEnumerable<Tresult> Get<Tresult>(Expression<Func<T, Tresult>> selector, Specification<T> @by) where Tresult : class
+        public Task<IEnumerable<Tresult>> Get<Tresult>(Expression<Func<T, Tresult>> selector, Specification<T> @by) where Tresult : class
         {
             Expression<Func<T, Tresult>> replacer = s => s as Tresult;
 
-            return this.projectionDb.Where(@by.Predicate?.Compile() ?? (x => true)).AsQueryable().Select(selector ?? replacer);
+            var result = this.projectionDb.Where(@by.Predicate?.Compile() ?? (x => true)).AsQueryable().Select(selector ?? replacer);
+            return Task.FromResult(result.AsEnumerable());
         }
 
-        public Tresult First<Tresult>(Expression<Func<T, Tresult>> selector, Specification<T> @by) where Tresult : class
+        public Task<Tresult> First<Tresult>(Expression<Func<T, Tresult>> selector, Specification<T> @by) where Tresult : class
         {
             Expression<Func<T, Tresult>> replacer = s => s as Tresult;
 
-            return this.projectionDb.Where(@by.Predicate?.Compile() ?? (x => true)).AsQueryable().Select(selector ?? replacer)
+            var result = this.projectionDb.Where(@by.Predicate?.Compile() ?? (x => true)).AsQueryable().Select(selector ?? replacer)
                 .FirstOrDefault();
+
+            return Task.FromResult(result);
         }
 
-        public bool Any(Specification<T> @by)
+        public Task<bool> Any(Specification<T> @by)
         {
-            return this.projectionDb.Any(@by.Predicate.Compile());
+            var result = this.projectionDb.Any(@by.Predicate.Compile());
+
+            return Task.FromResult(result);
         }
 
-        public long Count(Specification<T> @by = null)
+        public Task<long> Count(Specification<T> @by = null)
         {
             Func<T, bool> replacer = s => true;
             replacer = @by == null ? replacer : @by.Predicate.Compile();
 
-            return this.projectionDb.LongCount(replacer);
+            var result = this.projectionDb.LongCount(replacer);
+
+            return Task.FromResult(result);
         }
 
-        public void Append(T entity)
+        public Task Create(T aggregateRoot)
         {
-            using (var stream = eventStore.OpenStream(entity.Id.ToString()))
+            using (var stream = eventStore.OpenStream(aggregateRoot.Id.ToString()))
             {
-                stream.Add(new EventMessage { Body = entity.DomainEvents });
+                stream.Add(new EventMessage { Body = aggregateRoot.DomainEvents });
                 stream.CommitChanges(SequentialGuidGenerator.Instance.NewGuid());
             }
 
-            this.AddToProjectionDb(entity);
+            this.AddToProjectionDb(aggregateRoot);
+
+            return Task.CompletedTask;
         }
 
-        public void Append(IEnumerable<T> entities)
+        public Task BulkCreate(IEnumerable<T> aggregateRoots)
         {
-            using (var stream = eventStore.OpenStream(entities.First().ToString()))
+            using (var stream = eventStore.OpenStream(aggregateRoots.First().ToString()))
             {
-                foreach (var entity in entities)
+                foreach (var entity in aggregateRoots)
                 {
                     stream.Add(new EventMessage() { Body = entity.DomainEvents });
                     this.AddToProjectionDb(entity);
                 }
                 stream.CommitChanges(SequentialGuidGenerator.Instance.NewGuid());
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Remove(T entity)
+        public Task Update(T aggregateRoot)
         {
-            using (var stream = eventStore.OpenStream(entity.Id.ToString()))
+            return this.Create(aggregateRoot);
+        }
+
+        public Task Remove(T aggregateRoot)
+        {
+            using (var stream = eventStore.OpenStream(aggregateRoot.Id.ToString()))
             {
                 stream.ClearChanges();
             }
-            this.projectionDb.Remove(entity);
+            this.projectionDb.Remove(aggregateRoot);
+
+            return Task.CompletedTask;
         }
 
         #endregion Public methods

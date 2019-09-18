@@ -1,5 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
+using System;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
@@ -8,10 +9,11 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
     {
         #region Constructors
 
-        public OrderItemsChanged(OrderId id, IEnumerable<OrderItem> changedItems)
+        public OrderItemsChanged(OrderId id, IEnumerable<OrderItem> changedItems, DateTimeOffset modifiedDate)
             : base(id)
         {
             this.ChangedItems = changedItems as List<OrderItem>;
+            this.ModifiedDate = modifiedDate;
         }
 
         #endregion Constructors
@@ -19,6 +21,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         #region Properties
 
         public IReadOnlyList<OrderItem> ChangedItems { get; set; }
+
+        public DateTimeOffset ModifiedDate { get; private set; }
 
         #endregion Properties
 

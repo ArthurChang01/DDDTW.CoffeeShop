@@ -23,14 +23,12 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.Applications
             this.repository = repository;
         }
 
-        public Task<OrderResp> Handle(GetOrderMsg request, CancellationToken cancellationToken)
+        public async Task<OrderResp> Handle(GetOrderMsg request, CancellationToken cancellationToken)
         {
             var id = this.idTranslator.Translate(request.Id);
-            var order = this.repository.GetBy(id) ?? throw new ArgumentException();
+            var order = await this.repository.GetBy(id) ?? throw new ArgumentException();
 
-            var vm = new OrderResp(order);
-
-            return Task.FromResult(vm);
+            return new OrderResp(order);
         }
     }
 }

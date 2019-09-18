@@ -20,13 +20,13 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             this.repository = repository;
         }
 
-        public Task<IEnumerable<InventoryResp>> Handle(GetAllInventoryMsg request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<InventoryResp>> Handle(GetAllInventoryMsg request, CancellationToken cancellationToken)
         {
-            var results = this.repository.Get(new Specification<Domain.Inventories.Models.Inventory>(s => true),
-                request.PageNo, request.PageSize)
+            var results = (await this.repository.Get(new Specification<Domain.Inventories.Models.Inventory>(s => true),
+                request.PageNo, request.PageSize))
                 .Select(o => new InventoryResp(o));
 
-            return Task.FromResult(results);
+            return results;
         }
     }
 }

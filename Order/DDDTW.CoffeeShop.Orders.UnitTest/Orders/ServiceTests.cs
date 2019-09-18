@@ -3,6 +3,7 @@ using DDDTW.CoffeeShop.Orders.Application.Orders.Applications;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DomainServices;
+using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using FluentAssertions;
@@ -35,10 +36,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             this.id = new OrderId();
             this.item = new OrderItem(new Product("1", "Prod"), 10, 10);
-            this.order = new Order(id, "0", OrderStatus.Initial, new[]
-            {
-                this.item
-            }, DateTimeOffset.Now, DateTimeOffset.Now);
+            var cmd = new CreateOrder(id, "0", OrderStatus.Initial, new[] { this.item });
+            this.order = Order.Create(cmd);
             this.idTranslator = new IdTranslator();
             this.itemsTranslator = new OrderItemsTranslator();
 
@@ -82,7 +81,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             {
                 new OrderItemResp(this.item),
             });
-            this.mockRepository.Save(Arg.Any<Order>());
+            await this.mockRepository.Save(Arg.Any<Order>());
 
             var svc = new CreateOrderSvc(this.itemsTranslator, this.mockRepository);
             var actual = await svc.Handle(msg, new CancellationToken());
@@ -99,14 +98,13 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             {
                 new OrderItemResp(new ProductResp("3", "pp"), 11, 11)
             });
-            var result = new Order(this.id, "0", OrderStatus.Initial, new[]
+            var cmd = new CreateOrder(this.id, "0", OrderStatus.Initial, new[] { this.item });
+            var result = Order.Create(cmd);
+            var expectedCmd = new CreateOrder(this.id, "0", OrderStatus.Initial, new[]
             {
-                this.item
-            }, DateTimeOffset.Now, DateTimeOffset.Now);
-            var expect = new Order(this.id, "0", OrderStatus.Initial, new[]
-            {
-                new OrderItem(new Product("3", "pp"), 11, 11),
-            }, DateTimeOffset.Now, DateTimeOffset.Now);
+                new OrderItem(new Product("3", "pp"), 11, 11 ),
+            });
+            var expect = Order.Create(expectedCmd);
             var repository = NSubstitute.Substitute.For<IOrderRepository>();
             repository.GetBy(Arg.Any<OrderId>()).Returns(result);
 
@@ -164,10 +162,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         where T : IRequest<Unit>
         {
             var msg = msgFunc();
-            var result = new Order(this.id, "0", oriStatus, new[]
-            {
-                this.item
-            }, DateTimeOffset.Now, DateTimeOffset.Now);
+            var cmd = new CreateOrder(this.id, "0", oriStatus, new[] { this.item });
+            var result = Order.Create(cmd);
             var repository = NSubstitute.Substitute.For<IOrderRepository>();
             repository.GetBy(Arg.Any<OrderId>()).Returns(result);
 

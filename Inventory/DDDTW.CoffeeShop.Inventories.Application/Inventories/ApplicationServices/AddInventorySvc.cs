@@ -29,12 +29,12 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
 
         public async Task<InventoryResp> Handle(AddInventoryMsg request, CancellationToken cancellationToken)
         {
-            var id = this.repository.GenerateInventoryId();
+            var id = await this.repository.GenerateInventoryId();
             var item = this.itemTranslator.Translate(request.Item);
             var constraints = this.constraintTranslator.Translate(request.Constraints);
             var inventory = Inventory.Create(new CreateInventory(id, request.Qty, item, constraints));
 
-            this.repository.Save(inventory);
+            await this.repository.Save(inventory);
 
             var vm = new InventoryResp(inventory);
 

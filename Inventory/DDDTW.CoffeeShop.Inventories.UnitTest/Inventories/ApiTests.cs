@@ -1,4 +1,4 @@
-﻿using DDDTW.CoffeeShop.Inventories.Application.Inventories.Factories;
+﻿using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.Repositories;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
@@ -106,7 +106,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
                 this.inventories.Add(Inventory.Create(cmd));
             }
 
-            IInventoryRepository repository = new InventoryRepository(new InventoryFactory());
+            IInventoryRepository repository = new InventoryRepository(new ESRepositoryBase<Inventory, InventoryId>());
             foreach (var inventory in this.inventories)
             {
                 repository.Save(inventory);
