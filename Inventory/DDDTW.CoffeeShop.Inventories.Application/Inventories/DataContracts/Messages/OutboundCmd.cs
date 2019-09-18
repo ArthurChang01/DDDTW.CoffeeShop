@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
+using MediatR;
 
 namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages
 {
-    public class OutBoundMsg : IRequest<Domain.Inventories.Models.Inventory>
+    public class OutBoundMsg : IRequest<Inventory>
     {
         public string Id { get; set; }
 

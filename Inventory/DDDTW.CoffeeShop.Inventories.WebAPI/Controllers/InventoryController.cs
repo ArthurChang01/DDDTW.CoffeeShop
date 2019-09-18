@@ -1,5 +1,5 @@
 ﻿using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
-using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
+using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results;
 using DDDTW.CoffeeShop.Inventories.WebAPI.Models.RequestModels;
 using DDDTW.CoffeeShop.Inventories.WebAPI.Models.Requests;
 using MediatR;
@@ -24,7 +24,7 @@ namespace DDDTW.CoffeeShop.Inventories.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<InventoryResp>>> Get([FromQuery] int pageNo,
+        public async Task<ActionResult<IEnumerable<InventoryRst>>> Get([FromQuery] int pageNo,
             [FromQuery] int pageSize)
         {
             var result = await this.mediator.Send(new GetAllInventoryMsg(pageNo, pageSize));
@@ -33,8 +33,8 @@ namespace DDDTW.CoffeeShop.Inventories.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesDefaultResponseType(typeof(InventoryResp))]
-        public async Task<ActionResult<InventoryResp>> Get([FromRoute] string id)
+        [ProducesDefaultResponseType(typeof(InventoryRst))]
+        public async Task<ActionResult<InventoryRst>> Get([FromRoute] string id)
         {
             var result = await this.mediator.Send(new GetInventoryMsg() { Id = id });
             if (result == null)
@@ -68,16 +68,16 @@ namespace DDDTW.CoffeeShop.Inventories.WebAPI.Controllers
 
         #region Private Methods
 
-        private InventoryItemResp TransformToItemResp(InventoryItemRM rm)
+        private InventoryItemRst TransformToItemResp(InventoryItemRM rm)
         {
-            return new InventoryItemResp(rm.Name, rm.SKU, rm.Price, rm.Manufacturer, rm.ItemCategory,
+            return new InventoryItemRst(rm.Name, rm.SKU, rm.Price, rm.Manufacturer, rm.ItemCategory,
                 rm.InboundUnitName, rm.Capacity);
         }
 
-        private IEnumerable<InventoryConstraintResp> TransformToConstraints(
+        private IEnumerable<InventoryConstraintRst> TransformToConstraints(
             IEnumerable<InventoryConstraintRM> constraints)
         {
-            return constraints.Select(o => new InventoryConstraintResp(o.Type, o.Value, o.DataTypeOfValue));
+            return constraints.Select(o => new InventoryConstraintRst(o.Type, o.Value, o.DataTypeOfValue));
         }
 
         #endregion Private Methods

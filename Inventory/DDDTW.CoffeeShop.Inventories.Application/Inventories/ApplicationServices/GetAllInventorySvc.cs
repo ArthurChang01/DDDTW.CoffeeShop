@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
-using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
+using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using MediatR;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServices
 {
-    public class GetAllInventorySvc : IRequestHandler<GetAllInventoryMsg, IEnumerable<InventoryResp>>
+    public class GetAllInventorySvc : IRequestHandler<GetAllInventoryMsg, IEnumerable<InventoryRst>>
     {
         private readonly IInventoryRepository repository;
 
@@ -20,11 +20,11 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<InventoryResp>> Handle(GetAllInventoryMsg request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<InventoryRst>> Handle(GetAllInventoryMsg request, CancellationToken cancellationToken)
         {
             var results = (await this.repository.Get(new Specification<Domain.Inventories.Models.Inventory>(s => true),
                 request.PageNo, request.PageSize))
-                .Select(o => new InventoryResp(o));
+                .Select(o => new InventoryRst(o));
 
             return results;
         }

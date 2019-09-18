@@ -1,4 +1,4 @@
-﻿using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
+﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.Repositories;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
@@ -26,23 +26,23 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
     {
         private readonly List<Inventory> inventories = new List<Inventory>();
         private readonly WebApplicationFactory<Startup> factory;
+        private readonly HttpClient client;
 
         public ApiTests()
         {
-            var repository = this.InventoryRepository();
             this.factory = new WebApplicationFactory<Startup>().WithWebHostBuilder(config =>
                 {
                     config.ConfigureServices(svc =>
                     {
-                        svc.AddScoped<IInventoryRepository>(provider => repository);
+                        svc.AddScoped<IInventoryRepository>(this.GetAndRegisterInventoryRepository);
                     });
                 });
+            this.client = this.factory.CreateClient();
         }
 
         [Test]
         public async Task WhenGet()
         {
-            var client = this.factory.CreateClient();
             var response = await client.GetAsync("api/Inventory?pageNo=1&pageSize=5");
             var result = JsonConvert.DeserializeObject<IEnumerable<Inventory>>(await response.Content.ReadAsStringAsync());
 
@@ -54,7 +54,6 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public async Task WhenGetBy()
         {
             var id = this.inventories.First().Id;
-            var client = this.factory.CreateClient();
 
             var response = await client.GetAsync($"api/Inventory/{id}");
             var result = JsonConvert.DeserializeObject<Inventory>(await response.Content.ReadAsStringAsync());
@@ -66,7 +65,6 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public async Task WhenPost()
         {
-            var client = this.factory.CreateClient();
             var response = await client.PostAsJsonAsync("api/Inventory", new AddInventoryReq
             {
                 Qty = 10,
@@ -84,7 +82,6 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public async Task WhenPut()
         {
             var id = this.inventories.First().Id;
-            var client = this.factory.CreateClient();
             var response = await client.PutAsJsonAsync($"api/Inventory/{id}/qty", new ChangeQtyReq()
             {
                 ActionMode = InventoryOperation.Inbound,
@@ -94,7 +91,14 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
             response.EnsureSuccessStatusCode();
         }
 
-        private IInventoryRepository InventoryRepository()
+        [OneTimeTearDown]
+        public void Dispose()
+        {
+            this.factory.Dispose();
+            this.client.Dispose();
+        }
+
+        private IInventoryRepository GetAndRegisterInventoryRepository(IServiceProvider provider)
         {
             var item = A.New<InventoryItem>();
             for (int i = 0; i < 10; i++)
@@ -106,7 +110,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
                 this.inventories.Add(Inventory.Create(cmd));
             }
 
-            IInventoryRepository repository = new InventoryRepository(new ESRepositoryBase<Inventory, InventoryId>());
+            var repository = new InventoryRepository(provider.GetService<IRepository<Inventory, InventoryId>>());
             foreach (var inventory in this.inventories)
             {
                 repository.Save(inventory);

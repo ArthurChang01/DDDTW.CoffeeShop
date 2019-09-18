@@ -1,7 +1,7 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServices;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
-using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
+using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DomainServices;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
@@ -41,7 +41,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public async Task GetAllInventory()
         {
             var msg = new GetAllInventoryMsg(1, 1);
-            var expect = new List<InventoryResp> { new InventoryResp(this.inventory) };
+            var expect = new List<InventoryRst> { new InventoryRst(this.inventory) };
             this.mockRepository.Get(Arg.Any<Specification<Inventory>>(), 1, 1)
                 .Returns(new List<Inventory>() { this.inventory });
 
@@ -55,8 +55,8 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         public async Task GetInventory()
         {
             var msg = new GetInventoryMsg() { Id = this.id.ToString() };
-            var expect = new InventoryResp(this.id.ToString(), 10, new InventoryItemResp(inventory.Item),
-                inventory.Constraint.Select(o => new InventoryConstraintResp(o)));
+            var expect = new InventoryRst(this.id.ToString(), 10, new InventoryItemRst(inventory.Item),
+                inventory.Constraint.Select(o => new InventoryConstraintRst(o)));
             mockRepository.GetBy(Arg.Any<InventoryId>()).Returns(inventory);
 
             var svc = new GetInventorySvc(new IdTranslator(), mockRepository);
@@ -68,9 +68,9 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
         [Test]
         public async Task AddInventory()
         {
-            var item = new InventoryItemResp("name", "sku", 20, "manu", ItemCategory.Milk, "name", 10);
-            var constraint = new InventoryConstraintResp(InventoryConstraintType.MaxQty, "10", TypeCode.Int32);
-            var expect = new InventoryResp(this.id.ToString(), 10, item, new[] { constraint });
+            var item = new InventoryItemRst("name", "sku", 20, "manu", ItemCategory.Milk, "name", 10);
+            var constraint = new InventoryConstraintRst(InventoryConstraintType.MaxQty, "10", TypeCode.Int32);
+            var expect = new InventoryRst(this.id.ToString(), 10, item, new[] { constraint });
             var msg = new AddInventoryMsg(10, item, new[] { constraint });
             var itemTranslator = new InventoryItemsTranslator();
             var constraintsTranslator = new InventoryConstrainsTranslator();

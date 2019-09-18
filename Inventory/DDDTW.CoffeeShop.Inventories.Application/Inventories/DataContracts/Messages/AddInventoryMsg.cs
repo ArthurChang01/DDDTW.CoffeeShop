@@ -1,12 +1,12 @@
-﻿using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
+﻿using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results;
 using MediatR;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages
 {
-    public class AddInventoryMsg : IRequest<InventoryResp>
+    public class AddInventoryMsg : IRequest<InventoryRst>
     {
-        public AddInventoryMsg(int qty, InventoryItemResp item, IEnumerable<InventoryConstraintResp> constraints)
+        public AddInventoryMsg(int qty, InventoryItemRst item, IEnumerable<InventoryConstraintRst> constraints)
         {
             this.Qty = qty;
             this.Item = item;
@@ -15,8 +15,8 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Mes
 
         public int Qty { get; private set; }
 
-        public InventoryItemResp Item { get; private set; }
+        public InventoryItemRst Item { get; private set; }
 
-        public IEnumerable<InventoryConstraintResp> Constraints { get; private set; }
+        public IEnumerable<InventoryConstraintRst> Constraints { get; private set; }
     }
 }

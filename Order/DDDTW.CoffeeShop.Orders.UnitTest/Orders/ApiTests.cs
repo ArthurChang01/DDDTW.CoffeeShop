@@ -1,4 +1,4 @@
-﻿using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
+﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Orders.Application.Orders.Repositories;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
@@ -27,24 +27,23 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
     {
         private readonly List<Order> orders = new List<Order>();
         private readonly WebApplicationFactory<Startup> factory;
+        private readonly HttpClient client;
 
         public ApiTests()
         {
-            var repository = OrderRepository();
-
             this.factory = new WebApplicationFactory<Startup>().WithWebHostBuilder(config =>
+            {
+                config.ConfigureServices(svc =>
                 {
-                    config.ConfigureServices(svc =>
-                    {
-                        svc.AddScoped<IOrderRepository>(provider => repository);
-                    });
+                    svc.AddScoped<IOrderRepository>(this.GetAndRegisterOrderRepository);
                 });
+            });
+            this.client = this.factory.CreateClient();
         }
 
         [Test]
         public async Task WhenGet()
         {
-            var client = this.factory.CreateClient();
             var response = await client.GetAsync("api/Order?pageNo=1&pageSize=5");
             var result = JsonConvert.DeserializeObject<IEnumerable<Order>>(await response.Content.ReadAsStringAsync());
 
@@ -56,7 +55,6 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public async Task WhenGetBy()
         {
             var orderId = this.orders.First().Id;
-            var client = this.factory.CreateClient();
 
             var response = await client.GetAsync($"api/Order/{orderId}");
             var result = JsonConvert.DeserializeObject<Order>(await response.Content.ReadAsStringAsync());
@@ -84,7 +82,6 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public async Task WhenPatchItem()
         {
             var orderId = this.orders.First().Id;
-            var client = this.factory.CreateClient();
             var response = await client.PutAsJsonAsync($"api/Order/{orderId}/orderItems",
                new ChangeOrderItemReq()
                {
@@ -101,7 +98,6 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public async Task WhenPatchStatus()
         {
             var orderId = this.orders.First().Id;
-            var client = this.factory.CreateClient();
             var response = await client.PutAsJsonAsync($"api/Order/{orderId}/status",
                 new ChangeStatusReq()
                 {
@@ -114,8 +110,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public async Task WhenDelete()
         {
-            var orderId = this.orders.First().Id;
-            var client = this.factory.CreateClient();
+            var orderId = new OrderId(0, DateTimeOffset.Now);
             var response = await client.DeleteAsync($"api/Order/{orderId}");
 
             response.EnsureSuccessStatusCode();
@@ -125,9 +120,10 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public void Dispose()
         {
             this.factory.Dispose();
+            this.client.Dispose();
         }
 
-        private IOrderRepository OrderRepository()
+        private IOrderRepository GetAndRegisterOrderRepository(IServiceProvider provider)
         {
             for (int i = 0; i < 10; i++)
             {
@@ -136,8 +132,8 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
                 orders.Add(Order.Create(cmd));
             }
 
-            IOrderRepository repository = new OrderRepository(new ESRepositoryBase<Order, OrderId>());
-            foreach (var order in orders)
+            var repository = new OrderRepository(provider.GetService<IRepository<Order, OrderId>>());
+            foreach (var order in this.orders)
             {
                 repository.Save(order);
             }

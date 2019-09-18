@@ -1,12 +1,12 @@
-﻿using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
+﻿using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
 using MediatR;
 using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages
 {
-    public class CreateOrderMsg : IRequest<OrderResp>
+    public class CreateOrderMsg : IRequest<OrderRst>
     {
-        public CreateOrderMsg(string tableNo, IEnumerable<OrderItemResp> items)
+        public CreateOrderMsg(string tableNo, IEnumerable<OrderItemRst> items)
         {
             this.TableNo = tableNo;
             this.Items = items;
@@ -14,6 +14,6 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages
 
         public string TableNo { get; set; }
 
-        public IEnumerable<OrderItemResp> Items { get; private set; }
+        public IEnumerable<OrderItemRst> Items { get; private set; }
     }
 }

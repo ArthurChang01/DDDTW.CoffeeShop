@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace DDDTW.CoffeeShop.Inventories.WebAPI.Validations
 {
-    public class AddInventoryCmdValidator : AbstractValidator<AddInventoryMsg>
+    public class AddInventoryValidator : AbstractValidator<AddInventoryMsg>
     {
-        public AddInventoryCmdValidator()
+        public AddInventoryValidator()
         {
             RuleFor(x => x.Qty).GreaterThanOrEqualTo(0);
 

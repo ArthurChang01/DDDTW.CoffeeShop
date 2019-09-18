@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages;
-using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
+using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
@@ -15,12 +15,12 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.Applications
     public class ChangeItemSvc : IRequestHandler<ChangeItemMsg>
     {
         private readonly ITranslator<OrderId, string> idTranslator;
-        private readonly ITranslator<IEnumerable<OrderItem>, IEnumerable<OrderItemResp>> itemsTranslator;
+        private readonly ITranslator<IEnumerable<OrderItem>, IEnumerable<OrderItemRst>> itemsTranslator;
         private readonly IOrderRepository repository;
 
         public ChangeItemSvc(
             ITranslator<OrderId, string> idTranslator,
-            ITranslator<IEnumerable<OrderItem>, IEnumerable<OrderItemResp>> itemsTranslator,
+            ITranslator<IEnumerable<OrderItem>, IEnumerable<OrderItemRst>> itemsTranslator,
             IOrderRepository repository)
         {
             this.idTranslator = idTranslator;

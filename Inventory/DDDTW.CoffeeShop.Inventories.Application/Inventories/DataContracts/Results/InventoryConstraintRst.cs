@@ -3,24 +3,24 @@ using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using System;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses
+namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results
 {
-    public class InventoryConstraintResp : PropertyComparer<InventoryConstraintResp>
+    public class InventoryConstraintRst : PropertyComparer<InventoryConstraintRst>
     {
         #region Constructors
 
-        public InventoryConstraintResp()
+        public InventoryConstraintRst()
         {
         }
 
-        public InventoryConstraintResp(InventoryConstraint constraint)
+        public InventoryConstraintRst(InventoryConstraint constraint)
         {
             this.Type = constraint.Type.ToString();
             this.Value = constraint.Value;
             this.DataTypeOfValue = constraint.DataTypeOfValue.ToString();
         }
 
-        public InventoryConstraintResp(InventoryConstraintType type, string value, TypeCode typeOfValue)
+        public InventoryConstraintRst(InventoryConstraintType type, string value, TypeCode typeOfValue)
         {
             this.Type = type.ToString();
             this.Value = value;

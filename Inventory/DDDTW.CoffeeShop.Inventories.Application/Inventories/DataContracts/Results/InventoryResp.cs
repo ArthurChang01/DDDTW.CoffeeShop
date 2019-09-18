@@ -3,17 +3,17 @@ using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses
+namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results
 {
-    public class InventoryResp : PropertyComparer<InventoryResp>
+    public class InventoryRst : PropertyComparer<InventoryRst>
     {
         #region Constructors
 
-        public InventoryResp()
+        public InventoryRst()
         {
         }
 
-        public InventoryResp(string id, int qty, InventoryItemResp item, IEnumerable<InventoryConstraintResp> constraints)
+        public InventoryRst(string id, int qty, InventoryItemRst item, IEnumerable<InventoryConstraintRst> constraints)
         {
             this.Id = id;
             this.Qty = qty;
@@ -21,12 +21,12 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Res
             this.Constraints = constraints;
         }
 
-        public InventoryResp(Inventory inventory)
+        public InventoryRst(Inventory inventory)
         {
             this.Id = inventory.Id.ToString();
             this.Qty = inventory.Qty;
-            this.Item = new InventoryItemResp(inventory.Item);
-            this.Constraints = inventory.Constraint.Select(o => new InventoryConstraintResp(o));
+            this.Item = new InventoryItemRst(inventory.Item);
+            this.Constraints = inventory.Constraint.Select(o => new InventoryConstraintRst(o));
         }
 
         #endregion Constructors
@@ -37,9 +37,9 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Res
 
         public int Qty { get; private set; }
 
-        public InventoryItemResp Item { get; private set; }
+        public InventoryItemRst Item { get; private set; }
 
-        public IEnumerable<InventoryConstraintResp> Constraints { get; private set; }
+        public IEnumerable<InventoryConstraintRst> Constraints { get; private set; }
 
         #endregion Properties
 

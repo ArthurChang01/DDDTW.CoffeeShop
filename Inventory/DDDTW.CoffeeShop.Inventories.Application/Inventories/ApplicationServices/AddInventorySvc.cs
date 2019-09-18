@@ -1,6 +1,6 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Messages;
-using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses;
+using DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Commands;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Interfaces;
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServices
 {
-    public class AddInventorySvc : IRequestHandler<AddInventoryMsg, InventoryResp>
+    public class AddInventorySvc : IRequestHandler<AddInventoryMsg, InventoryRst>
     {
-        private readonly ITranslator<InventoryItem, InventoryItemResp> itemTranslator;
-        private readonly ITranslator<IEnumerable<InventoryConstraint>, IEnumerable<InventoryConstraintResp>> constraintTranslator;
+        private readonly ITranslator<InventoryItem, InventoryItemRst> itemTranslator;
+        private readonly ITranslator<IEnumerable<InventoryConstraint>, IEnumerable<InventoryConstraintRst>> constraintTranslator;
         private readonly IInventoryRepository repository;
 
         public AddInventorySvc(
-            ITranslator<InventoryItem, InventoryItemResp> itemTranslator,
-            ITranslator<IEnumerable<InventoryConstraint>, IEnumerable<InventoryConstraintResp>> constraintsTranslator,
+            ITranslator<InventoryItem, InventoryItemRst> itemTranslator,
+            ITranslator<IEnumerable<InventoryConstraint>, IEnumerable<InventoryConstraintRst>> constraintsTranslator,
             IInventoryRepository repository)
         {
             this.itemTranslator = itemTranslator;
@@ -27,7 +27,7 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
             this.repository = repository;
         }
 
-        public async Task<InventoryResp> Handle(AddInventoryMsg request, CancellationToken cancellationToken)
+        public async Task<InventoryRst> Handle(AddInventoryMsg request, CancellationToken cancellationToken)
         {
             var id = await this.repository.GenerateInventoryId();
             var item = this.itemTranslator.Translate(request.Item);
@@ -36,9 +36,7 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServic
 
             await this.repository.Save(inventory);
 
-            var vm = new InventoryResp(inventory);
-
-            return await Task.FromResult(vm);
+            return new InventoryRst(inventory);
         }
     }
 }

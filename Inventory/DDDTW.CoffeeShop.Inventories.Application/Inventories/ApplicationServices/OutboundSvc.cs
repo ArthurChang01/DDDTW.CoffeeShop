@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.ApplicationServices
 {
-    public class OutboundSvc : IRequestHandler<OutBoundMsg, Domain.Inventories.Models.Inventory>
+    public class OutboundSvc : IRequestHandler<OutBoundMsg, Inventory>
     {
         private readonly ITranslator<InventoryId, string> idTranslator;
         private readonly IInventoryRepository repository;

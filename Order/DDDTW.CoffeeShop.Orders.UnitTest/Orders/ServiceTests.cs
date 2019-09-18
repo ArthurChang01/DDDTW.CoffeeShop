@@ -1,7 +1,7 @@
 ﻿using DDDTW.CoffeeShop.CommonLib.BaseClasses;
 using DDDTW.CoffeeShop.Orders.Application.Orders.Applications;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages;
-using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
+using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DomainServices;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
@@ -25,7 +25,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         private readonly Order order;
         private readonly OrderItem item;
 
-        private readonly OrderResp resp;
+        private readonly OrderRst result;
 
         private readonly IdTranslator idTranslator;
         private readonly OrderItemsTranslator itemsTranslator;
@@ -41,7 +41,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             this.idTranslator = new IdTranslator();
             this.itemsTranslator = new OrderItemsTranslator();
 
-            this.resp = new OrderResp(this.order);
+            this.result = new OrderRst(this.order);
 
             this.mockRepository = Substitute.For<IOrderRepository>();
             this.mockRepository.GenerateOrderId().Returns(id);
@@ -51,7 +51,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public async Task GetAllOrder()
         {
             var msg = new GetAllOrderMsg(1, 1);
-            var expect = new List<OrderResp>() { this.resp };
+            var expect = new List<OrderRst>() { this.result };
             mockRepository.Get(Arg.Any<Specification<Order>>(), 1, 1)
                 .Returns(new List<Order>() { order });
 
@@ -65,7 +65,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public async Task GetOrder()
         {
             var msg = new GetOrderMsg(this.id.ToString());
-            var expect = this.resp;
+            var expect = this.result;
             mockRepository.GetBy(Arg.Any<OrderId>()).Returns(this.order);
 
             var svc = new GetOrderSvc(new IdTranslator(), this.mockRepository);
@@ -79,16 +79,16 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var msg = new CreateOrderMsg("0", new[]
             {
-                new OrderItemResp(this.item),
+                new OrderItemRst(this.item),
             });
             await this.mockRepository.Save(Arg.Any<Order>());
 
             var svc = new CreateOrderSvc(this.itemsTranslator, this.mockRepository);
             var actual = await svc.Handle(msg, new CancellationToken());
 
-            actual.Id.Should().Be(this.resp.Id);
-            actual.Status.Should().Be(this.resp.Status);
-            actual.Items.Should().BeEquivalentTo(this.resp.Items.AsEnumerable());
+            actual.Id.Should().Be(this.result.Id);
+            actual.Status.Should().Be(this.result.Status);
+            actual.Items.Should().BeEquivalentTo(this.result.Items.AsEnumerable());
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var msg = new ChangeItemMsg(this.id.ToString(), new[]
             {
-                new OrderItemResp(new ProductResp("3", "pp"), 11, 11)
+                new OrderItemRst(new ProductRst("3", "pp"), 11, 11)
             });
             var cmd = new CreateOrder(this.id, "0", OrderStatus.Initial, new[] { this.item });
             var result = Order.Create(cmd);

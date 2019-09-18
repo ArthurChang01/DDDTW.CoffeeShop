@@ -2,23 +2,23 @@
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses
+namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results
 {
-    public class ProductResp : PropertyComparer<ProductResp>
+    public class ProductRst : PropertyComparer<ProductRst>
     {
         #region Constructors
 
-        public ProductResp()
+        public ProductRst()
         {
         }
 
-        public ProductResp(string id, string name)
+        public ProductRst(string id, string name)
         {
             this.Id = id;
             this.Name = name;
         }
 
-        public ProductResp(Product product)
+        public ProductRst(Product product)
         {
             this.Id = product.Id;
             this.Name = product.Name;

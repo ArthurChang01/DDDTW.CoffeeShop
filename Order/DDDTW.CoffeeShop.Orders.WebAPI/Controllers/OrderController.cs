@@ -1,5 +1,5 @@
 ﻿using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages;
-using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
+using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using DDDTW.CoffeeShop.Orders.WebAPI.Models.RequestModels;
 using DDDTW.CoffeeShop.Orders.WebAPI.Models.Requests;
@@ -25,8 +25,8 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesDefaultResponseType(typeof(IEnumerable<OrderResp>))]
-        public async Task<ActionResult<IEnumerable<OrderResp>>> Get([FromQuery] int pageNo, [FromQuery] int pageSize)
+        [ProducesDefaultResponseType(typeof(IEnumerable<OrderRst>))]
+        public async Task<ActionResult<IEnumerable<OrderRst>>> Get([FromQuery] int pageNo, [FromQuery] int pageSize)
         {
             var result = await this.mediator.Send(new GetAllOrderMsg(pageNo, pageSize));
 
@@ -34,8 +34,8 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesDefaultResponseType(typeof(OrderResp))]
-        public async ValueTask<ActionResult<OrderResp>> Get([FromRoute]string id)
+        [ProducesDefaultResponseType(typeof(OrderRst))]
+        public async ValueTask<ActionResult<OrderRst>> Get([FromRoute]string id)
         {
             var vm = await this.mediator.Send(new GetOrderMsg(id));
             if (vm == null)
@@ -86,9 +86,9 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI.Controllers
 
         #region Private Methods
 
-        private IEnumerable<OrderItemResp> TransformToOrderItemVM(IEnumerable<OrderItemRM> item)
+        private IEnumerable<OrderItemRst> TransformToOrderItemVM(IEnumerable<OrderItemRM> item)
         {
-            return item.Select(o => new OrderItemResp(new ProductResp(o.Product.Id, o.Product.Name), o.Qty, o.Price));
+            return item.Select(o => new OrderItemRst(new ProductRst(o.Product.Id, o.Product.Name), o.Qty, o.Price));
         }
 
         private IRequest<Unit> GetMsg(string id, ChangeStatusReq dto)

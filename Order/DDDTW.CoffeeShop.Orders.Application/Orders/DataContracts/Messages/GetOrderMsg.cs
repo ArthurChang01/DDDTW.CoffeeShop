@@ -1,9 +1,9 @@
-﻿using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses;
+﻿using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
 using MediatR;
 
 namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages
 {
-    public class GetOrderMsg : IRequest<OrderResp>
+    public class GetOrderMsg : IRequest<OrderRst>
     {
         public GetOrderMsg(string id)
         {

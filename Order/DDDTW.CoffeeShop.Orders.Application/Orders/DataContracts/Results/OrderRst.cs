@@ -4,17 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses
+namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results
 {
-    public class OrderResp : PropertyComparer<OrderResp>
+    public class OrderRst : PropertyComparer<OrderRst>
     {
         #region Constructors
 
-        public OrderResp()
+        public OrderRst()
         {
         }
 
-        public OrderResp(string id, OrderStatus status, IEnumerable<OrderItemResp> items, DateTimeOffset createdDate, DateTimeOffset? modifiedDate = null)
+        public OrderRst(string id, OrderStatus status, IEnumerable<OrderItemRst> items, DateTimeOffset createdDate, DateTimeOffset? modifiedDate = null)
         {
             this.Id = id;
             this.Status = status.ToString();
@@ -23,11 +23,11 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses
             this.ModifiedDate = modifiedDate;
         }
 
-        public OrderResp(Order order)
+        public OrderRst(Order order)
         {
             this.Id = order.Id.ToString();
             this.Status = order.Status.ToString();
-            this.Items = order.OrderItems.Select(o => new OrderItemResp(o));
+            this.Items = order.OrderItems.Select(o => new OrderItemRst(o));
             this.CreatedDate = order.CreatedDate;
             this.ModifiedDate = order.ModifiedDate;
         }
@@ -40,7 +40,7 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Responses
 
         public string Status { get; private set; }
 
-        public IEnumerable<OrderItemResp> Items { get; private set; }
+        public IEnumerable<OrderItemRst> Items { get; private set; }
 
         public DateTimeOffset CreatedDate { get; private set; }
 

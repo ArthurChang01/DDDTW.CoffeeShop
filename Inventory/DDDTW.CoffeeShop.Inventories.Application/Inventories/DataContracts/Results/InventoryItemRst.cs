@@ -2,17 +2,17 @@
 using DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models;
 using System.Collections.Generic;
 
-namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Responses
+namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Results
 {
-    public class InventoryItemResp : PropertyComparer<InventoryItemResp>
+    public class InventoryItemRst : PropertyComparer<InventoryItemRst>
     {
         #region Constructors
 
-        public InventoryItemResp()
+        public InventoryItemRst()
         {
         }
 
-        public InventoryItemResp(InventoryItem item)
+        public InventoryItemRst(InventoryItem item)
         {
             this.Name = item.Name;
             this.SKU = item.SKU;
@@ -23,7 +23,7 @@ namespace DDDTW.CoffeeShop.Inventories.Application.Inventories.DataContracts.Res
             this.Capacity = item.Capacity;
         }
 
-        public InventoryItemResp(string name, string sku, decimal price, string manufacturer, ItemCategory category, string unitName, int capacity)
+        public InventoryItemRst(string name, string sku, decimal price, string manufacturer, ItemCategory category, string unitName, int capacity)
         {
             this.Name = name;
             this.SKU = sku;
