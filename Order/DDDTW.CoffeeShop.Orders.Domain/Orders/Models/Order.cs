@@ -38,9 +38,9 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
             this.ModifiedDate = modified;
         }
 
-        public Order(IEnumerable<IDomainEvent> events)
+        public Order(IEnumerable<IDomainEvent<OrderId>> events)
         {
-            var projections = new Dictionary<string, Action<IDomainEvent>>()
+            var projections = new Dictionary<string, Action<IDomainEvent<OrderId>>>()
            {
                {nameof(OrderCreated), evt => this.When((OrderCreated)evt) },
                {nameof(OrderItemsChanged), evt => this.When((OrderItemsChanged)evt) },

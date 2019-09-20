@@ -10,7 +10,7 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DomainServices
     {
         public IEnumerable<OrderItem> Translate(IEnumerable<OrderItemRst> input)
         {
-            return input.Select(o => new OrderItem(new Product(o.Product.Id, o.Product.Name), o.Qty, o.Price));
+            return input.Select(o => new OrderItem(o.ProductId, o.Qty, o.Price));
         }
     }
 }

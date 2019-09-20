@@ -35,12 +35,12 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.Models
                                new List<InventoryConstraint>();
         }
 
-        public Inventory(IEnumerable<IDomainEvent> events)
+        public Inventory(IEnumerable<IDomainEvent<InventoryId>> events)
         {
             if (events == null || events.Any() == false)
                 throw new ArgumentException("Events can not be empty or null");
 
-            var projections = new Dictionary<string, Action<IDomainEvent>>()
+            var projections = new Dictionary<string, Action<IDomainEvent<InventoryId>>>()
             {
                 {nameof(InventoryCreated), evt => this.When((InventoryCreated)evt) },
                 {nameof(Inbounded), evt => this.When((Inbounded)evt) },

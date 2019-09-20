@@ -1,13 +1,7 @@
 ﻿using Autofac;
-using DDDTW.CoffeeShop.CommonLib.Interfaces;
-using DDDTW.CoffeeShop.Infrastructures.EventSourcings;
-using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
-using DDDTW.CoffeeShop.Orders.Application.Orders.DomainServices;
-using DDDTW.CoffeeShop.Orders.Application.Orders.Repositories;
-using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
-using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
+using DDDTW.CoffeeShop.Orders.Application.Orders;
+using DDDTW.CoffeeShop.Orders.Application.Products;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.Orders.Application
 {
@@ -15,10 +9,8 @@ namespace DDDTW.CoffeeShop.Orders.Application
     {
         public static void Load(ContainerBuilder builder, IConfiguration config)
         {
-            builder.RegisterType<IdTranslator>().As<ITranslator<OrderId, string>>();
-            builder.RegisterType<OrderItemsTranslator>().As<ITranslator<IEnumerable<OrderItem>, IEnumerable<OrderItemRst>>>();
-            builder.RegisterType<ESRepositoryBase<Order, OrderId>>().As<IRepository<Order, OrderId>>();
-            builder.RegisterType<OrderRepository>().As<IOrderRepository>();
+            builder.RegisterModule(new OrderModule(config));
+            builder.RegisterModule(new ProductModule(config));
         }
     }
 }

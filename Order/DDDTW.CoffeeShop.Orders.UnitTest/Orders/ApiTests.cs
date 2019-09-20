@@ -4,16 +4,18 @@ using DDDTW.CoffeeShop.Orders.Domain.Orders.Commands;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Interfaces;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
 using DDDTW.CoffeeShop.Orders.WebAPI;
-using DDDTW.CoffeeShop.Orders.WebAPI.Models.RequestModels;
-using DDDTW.CoffeeShop.Orders.WebAPI.Models.Requests;
+using DDDTW.CoffeeShop.Orders.WebAPI.Models.Orders.RequestModels;
+using DDDTW.CoffeeShop.Orders.WebAPI.Models.Orders.Requests;
 using FluentAssertions;
 using GenFu;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -31,11 +33,19 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
 
         public ApiTests()
         {
+            var projectDir = Directory.GetCurrentDirectory();
+            var configPath = Path.Combine(projectDir, "appsettings.json");
+
             this.factory = new WebApplicationFactory<Startup>().WithWebHostBuilder(config =>
             {
+                config.ConfigureAppConfiguration((context, conf) =>
+                {
+                    conf.AddJsonFile(configPath);
+                });
+
                 config.ConfigureServices(svc =>
                 {
-                    svc.AddScoped<IOrderRepository>(this.GetAndRegisterOrderRepository);
+                    svc.AddScoped<IOrderRepository>(provider => this.GetAndRegisterOrderRepository(provider).Result);
                 });
             });
             this.client = this.factory.CreateClient();
@@ -71,7 +81,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             {
                 Items = new[]
                 {
-                    new OrderItemRM() {Product = new ProductRM() {Id = "11", Name = "Prod"}, Qty = 11, Price = 11},
+                    new OrderItemRM() {ProductId = $"prd-{DateTimeOffset.Now:yyyyMMdd}-3", Qty = 11, Price = 11},
                 }
             });
 
@@ -85,9 +95,9 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             var response = await client.PutAsJsonAsync($"api/Order/{orderId}/orderItems",
                new ChangeOrderItemReq()
                {
-                   OrderItems = new List<OrderItemRM>()
+                   Items = new List<OrderItemRM>()
                {
-                   new OrderItemRM() {Product = new ProductRM() { Id = "0", Name = "pp"}, Qty = 10, Price = 10}
+                   new OrderItemRM() {ProductId = $"prd-{DateTimeOffset.Now:yyyyMMdd}-3", Qty = 10, Price = 10}
                }
                });
 
@@ -123,7 +133,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             this.client.Dispose();
         }
 
-        private IOrderRepository GetAndRegisterOrderRepository(IServiceProvider provider)
+        private async Task<IOrderRepository> GetAndRegisterOrderRepository(IServiceProvider provider)
         {
             for (int i = 0; i < 10; i++)
             {
@@ -132,11 +142,14 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
                 orders.Add(Order.Create(cmd));
             }
 
+            List<Task> saveTasks = new List<Task>();
             var repository = new OrderRepository(provider.GetService<IRepository<Order, OrderId>>());
             foreach (var order in this.orders)
             {
-                repository.Save(order);
+                saveTasks.Add(repository.Save(order));
             }
+
+            await Task.WhenAll(saveTasks);
 
             return repository;
         }

@@ -9,11 +9,13 @@ using DDDTW.CoffeeShop.Inventories.WebAPI.Models.Requests;
 using FluentAssertions;
 using GenFu;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,11 +32,19 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
 
         public ApiTests()
         {
+            var projectDir = Directory.GetCurrentDirectory();
+            var configPath = Path.Combine(projectDir, "appsettings.json");
+
             this.factory = new WebApplicationFactory<Startup>().WithWebHostBuilder(config =>
                 {
+                    config.ConfigureAppConfiguration((context, conf) =>
+                    {
+                        conf.AddJsonFile(configPath);
+                    });
+
                     config.ConfigureServices(svc =>
                     {
-                        svc.AddScoped<IInventoryRepository>(this.GetAndRegisterInventoryRepository);
+                        svc.AddScoped<IInventoryRepository>(provider => this.GetAndRegisterInventoryRepository(provider).Result);
                     });
                 });
             this.client = this.factory.CreateClient();
@@ -98,7 +108,7 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
             this.client.Dispose();
         }
 
-        private IInventoryRepository GetAndRegisterInventoryRepository(IServiceProvider provider)
+        private async Task<IInventoryRepository> GetAndRegisterInventoryRepository(IServiceProvider provider)
         {
             var item = A.New<InventoryItem>();
             for (int i = 0; i < 10; i++)
@@ -110,11 +120,14 @@ namespace DDDTW.CoffeeShop.Inventories.UnitTest.Inventories
                 this.inventories.Add(Inventory.Create(cmd));
             }
 
+            List<Task> saveTasks = new List<Task>();
             var repository = new InventoryRepository(provider.GetService<IRepository<Inventory, InventoryId>>());
             foreach (var inventory in this.inventories)
             {
-                repository.Save(inventory);
+                saveTasks.Add(repository.Save(inventory));
             }
+
+            await Task.WhenAll(saveTasks);
 
             return repository;
         }

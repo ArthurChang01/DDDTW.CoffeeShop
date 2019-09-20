@@ -9,8 +9,8 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
         #region Constructors
 
         public Inbounded(InventoryId id, int amount, int qty)
-            : base(id)
         {
+            this.EntityId = id;
             this.Amount = amount;
             this.Qty = qty;
         }
@@ -18,6 +18,8 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
         #endregion Constructors
 
         #region Properties
+
+        public override InventoryId EntityId { get; }
 
         public int Amount { get; private set; }
 
@@ -27,6 +29,7 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
 
         protected override IEnumerable<object> GetDerivedEventEqualityComponents()
         {
+            yield return this.EntityId;
             yield return this.Amount;
             yield return this.Qty;
         }

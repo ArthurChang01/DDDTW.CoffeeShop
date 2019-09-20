@@ -1,8 +1,8 @@
 ﻿using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Messages;
 using DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results;
 using DDDTW.CoffeeShop.Orders.Domain.Orders.Models;
-using DDDTW.CoffeeShop.Orders.WebAPI.Models.RequestModels;
-using DDDTW.CoffeeShop.Orders.WebAPI.Models.Requests;
+using DDDTW.CoffeeShop.Orders.WebAPI.Models.Orders.RequestModels;
+using DDDTW.CoffeeShop.Orders.WebAPI.Models.Orders.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +56,7 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI.Controllers
         [HttpPut("{id}/orderItems")]
         public async ValueTask<ActionResult> Patch([FromRoute]string id, [FromBody] ChangeOrderItemReq req)
         {
-            var cmd = new ChangeItemMsg(id, this.TransformToOrderItemVM(req.OrderItems));
+            var cmd = new ChangeItemMsg(id, this.TransformToOrderItemVM(req.Items));
             await this.mediator.Send(cmd);
             return this.Ok();
         }
@@ -88,7 +88,7 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI.Controllers
 
         private IEnumerable<OrderItemRst> TransformToOrderItemVM(IEnumerable<OrderItemRM> item)
         {
-            return item.Select(o => new OrderItemRst(new ProductRst(o.Product.Id, o.Product.Name), o.Qty, o.Price));
+            return item.Select(o => new OrderItemRst(new Uri($"{Request.GetDisplayUrl()}/Order/Product/{o.ProductId}").ToString(), o.Qty, o.Price));
         }
 
         private IRequest<Unit> GetMsg(string id, ChangeStatusReq dto)

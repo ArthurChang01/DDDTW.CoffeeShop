@@ -6,11 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="7.0.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.9.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.1" />
     <PackageReference Include="NEventStore" Version="7.0.0" />
+    <PackageReference Include="NEventStore.Persistence.MongoDB" Version="7.0.0" />
+    <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
     <PackageReference Include="SequentialGuid" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DDDTW.CoffeeShop.CommonLib\DDDTW.CoffeeShop.CommonLib.csproj" />
+    <ProjectReference Include="..\Order\DDDTW.CoffeeShop.Orders.Domain\DDDTW.CoffeeShop.Orders.Domain.csproj" />
   </ItemGroup>
 </Project>

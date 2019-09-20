@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 {
-    public abstract class DomainEvent<TentityId> : ValueObject<DomainEvent<TentityId>>, IDomainEvent
+    public abstract class DomainEvent<TentityId> : PropertyComparer<DomainEvent<TentityId>>, IDomainEvent<TentityId>
+        where TentityId : IEntityId
     {
         #region Consturctor
 
-        protected DomainEvent(TentityId entityId, DateTimeOffset? occuredDate = null)
+        protected DomainEvent(DateTimeOffset? occuredDate = null)
         {
             this.EventId = Guid.NewGuid();
-            this.EntityId = entityId;
             this.OccuredDate = occuredDate ?? DateTimeOffset.Now;
         }
 
@@ -23,7 +23,7 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 
         public DateTimeOffset OccuredDate { get; private set; }
 
-        public TentityId EntityId { get; private set; }
+        public abstract TentityId EntityId { get; }
 
         protected abstract IEnumerable<object> GetDerivedEventEqualityComponents();
 
@@ -33,7 +33,6 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
         {
             yield return this.EventId;
             yield return this.OccuredDate;
-            yield return this.EntityId;
             foreach (var property in this.GetDerivedEventEqualityComponents())
             {
                 yield return property;

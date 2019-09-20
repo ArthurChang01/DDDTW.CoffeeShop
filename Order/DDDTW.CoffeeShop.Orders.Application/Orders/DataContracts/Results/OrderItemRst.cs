@@ -12,9 +12,9 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results
         {
         }
 
-        public OrderItemRst(ProductRst product, int qty, decimal price)
+        public OrderItemRst(string productId, int qty, decimal price)
         {
-            this.Product = product;
+            this.ProductId = productId;
             this.Qty = qty;
             this.Price = price;
             this.Fee = this.Qty * this.Price;
@@ -22,7 +22,7 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results
 
         public OrderItemRst(OrderItem item)
         {
-            this.Product = new ProductRst(item.Product.Id, item.Product.Name);
+            this.ProductId = item.ProductId;
             this.Qty = item.Qty;
             this.Price = item.Price;
             this.Fee = item.Fee;
@@ -32,7 +32,7 @@ namespace DDDTW.CoffeeShop.Orders.Application.Orders.DataContracts.Results
 
         #region Properties
 
-        public ProductRst Product { get; private set; }
+        public string ProductId { get; private set; }
 
         public int Qty { get; private set; }
 

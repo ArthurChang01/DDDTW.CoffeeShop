@@ -10,8 +10,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         #region Constructors
 
         public OrderItemsChanged(OrderId id, IEnumerable<OrderItem> changedItems, DateTimeOffset modifiedDate)
-            : base(id)
         {
+            this.EntityId = id;
             this.ChangedItems = changedItems as List<OrderItem>;
             this.ModifiedDate = modifiedDate;
         }
@@ -19,6 +19,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         #endregion Constructors
 
         #region Properties
+
+        public override OrderId EntityId { get; }
 
         public IReadOnlyList<OrderItem> ChangedItems { get; set; }
 
@@ -28,6 +30,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
 
         protected override IEnumerable<object> GetDerivedEventEqualityComponents()
         {
+            yield return this.EntityId;
             foreach (var item in this.ChangedItems)
             {
                 yield return item;

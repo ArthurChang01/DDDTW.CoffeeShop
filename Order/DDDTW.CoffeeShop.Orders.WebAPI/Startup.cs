@@ -1,16 +1,10 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using DDDTW.CoffeeShop.Orders.Application;
-using FluentValidation.AspNetCore;
+﻿using DDDTW.CoffeeShop.Orders.WebAPI.Middlewares;
 using GlobalExceptionHandler.WebApi;
-using MediatR.Extensions.Autofac.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
 using System;
 
 namespace DDDTW.CoffeeShop.Orders.WebAPI
@@ -26,28 +20,13 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .AddControllersAsServices()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddFluentValidation(fv =>
-                {
-                    fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                    fv.ImplicitlyValidateChildProperties = true;
-                });
+            services.AddOptionObjectService(this.Configuration);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info() { Title = "Inventory API", Version = "v1" });
-            });
+            services.AddMvcService();
 
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.AddMediatR(typeof(OrderApplication).Assembly);
+            services.AddSwaggerService();
 
-            OrderApplication.Load(containerBuilder, this.Configuration);
-            containerBuilder.Populate(services);
-
-            var container = containerBuilder.Build();
-            return new AutofacServiceProvider(container);
+            return services.SetIoCService(this.Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -68,13 +47,9 @@ namespace DDDTW.CoffeeShop.Orders.WebAPI
 
             app.UseHttpsRedirection();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Inventory API V1");
-            });
+            app.UseSwaggerService();
 
-            app.UseMvc();
+            app.UseMvcService();
         }
     }
 }

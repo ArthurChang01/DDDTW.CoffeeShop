@@ -10,8 +10,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         #region Constructors
 
         public OrderStatusChanged(OrderId id, OrderStatus lastStatus, OrderStatus curStatus, DateTimeOffset modifiedDate)
-            : base(id)
         {
+            this.EntityId = id;
             this.LastStatus = lastStatus;
             this.CurrentStatus = curStatus;
             this.ModifiedDate = modifiedDate;
@@ -20,6 +20,8 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
         #endregion Constructors
 
         #region Properties
+
+        public override OrderId EntityId { get; }
 
         public OrderStatus LastStatus { get; set; }
 
@@ -31,8 +33,10 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.DomainEvents
 
         protected override IEnumerable<object> GetDerivedEventEqualityComponents()
         {
+            yield return this.EntityId;
             yield return this.LastStatus;
             yield return this.CurrentStatus;
+            yield return this.ModifiedDate;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         public ServiceTests()
         {
             this.id = new OrderId();
-            this.item = new OrderItem(new Product("1", "Prod"), 10, 10);
+            this.item = new OrderItem($"prd-{DateTimeOffset.Now:yyyyMMdd}-1", 10, 10);
             var cmd = new CreateOrder(id, "0", OrderStatus.Initial, new[] { this.item });
             this.order = Order.Create(cmd);
             this.idTranslator = new IdTranslator();
@@ -96,13 +96,13 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         {
             var msg = new ChangeItemMsg(this.id.ToString(), new[]
             {
-                new OrderItemRst(new ProductRst("3", "pp"), 11, 11)
+                new OrderItemRst($"prd-{DateTimeOffset.Now:yyyyMMdd}-3",  11, 11)
             });
             var cmd = new CreateOrder(this.id, "0", OrderStatus.Initial, new[] { this.item });
             var result = Order.Create(cmd);
             var expectedCmd = new CreateOrder(this.id, "0", OrderStatus.Initial, new[]
             {
-                new OrderItem(new Product("3", "pp"), 11, 11 ),
+                new OrderItem($"prd-{DateTimeOffset.Now:yyyyMMdd}-3", 11, 11 ),
             });
             var expect = Order.Create(expectedCmd);
             var repository = NSubstitute.Substitute.For<IOrderRepository>();

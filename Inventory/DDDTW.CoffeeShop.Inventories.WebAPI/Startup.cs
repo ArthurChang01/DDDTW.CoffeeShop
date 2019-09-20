@@ -1,14 +1,10 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using DDDTW.CoffeeShop.Inventories.Application;
-using FluentValidation.AspNetCore;
-using MediatR.Extensions.Autofac.DependencyInjection;
+﻿using DDDTW.CoffeeShop.Inventories.WebAPI.Middlewares;
+using GlobalExceptionHandler.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Newtonsoft.Json;
 using System;
 
 namespace DDDTW.CoffeeShop.Inventories.WebAPI
@@ -24,50 +20,33 @@ namespace DDDTW.CoffeeShop.Inventories.WebAPI
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .AddControllersAsServices()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddFluentValidation(fv =>
-                {
-                    fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                    fv.ImplicitlyValidateChildProperties = true;
-                });
+            services.AddOptionObjectService(this.Configuration);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info() { Title = "Inventory API", Version = "v1" });
-            });
+            services.AddMvcService();
 
-            var containerBuilder = new ContainerBuilder();
-            containerBuilder.AddMediatR(typeof(InventoryApplication).Assembly);
+            services.AddSwaggerService();
 
-            containerBuilder.RegisterModule<InventoryApplication>();
-            containerBuilder.Populate(services);
-
-            var container = containerBuilder.Build();
-            return new AutofacServiceProvider(container);
+            return services.SetIoCService(this.Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            app.UseGlobalExceptionHandler(x =>
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
+                x.ContentType = "application/json";
+                x.ResponseBody(s => JsonConvert.SerializeObject(new
+                {
+                    s.Message
+                }));
+            });
+
+            app.UseHsts();
 
             app.UseHttpsRedirection();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Inventory API V1");
-            });
+            app.UseSwaggerService();
 
-            app.UseMvc();
+            app.UseMvcService();
         }
     }
 }

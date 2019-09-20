@@ -60,7 +60,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
         [Test]
         public void ChangeItem()
         {
-            var newItem = new OrderItem(new Product(), 10, 10);
+            var newItem = new OrderItem($"prd-{DateTimeOffset.Now:yyyyMMdd}-0", 10, 10);
             var order = this.GetOrderBuildingParam().Order;
 
             order.ChangeItem(new ChangeItem(new[] { newItem }));
@@ -157,7 +157,7 @@ namespace DDDTW.CoffeeShop.Orders.UnitTest.Orders
             int? qty = null, decimal? price = null)
         {
             var orderId = new OrderId(seqNo, occuredDate ?? DateTimeOffset.Now);
-            var item = new OrderItem(new Product(), qty ?? 0, price ?? 0);
+            var item = new OrderItem(string.Empty, qty ?? 0, price ?? 0);
             var cmd = new CreateOrder(orderId, "0", status ?? OrderStatus.Initial, new[] { item });
             var order = Order.Create(cmd);
 

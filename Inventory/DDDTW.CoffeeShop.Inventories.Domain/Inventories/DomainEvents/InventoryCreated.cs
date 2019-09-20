@@ -9,8 +9,8 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
         #region Constructors
 
         public InventoryCreated(InventoryId id, int qty, InventoryItem item, List<InventoryConstraint> constraints)
-            : base(id)
         {
+            this.EntityId = id;
             this.Qty = qty;
             this.Item = item;
             this.Constraints = constraints;
@@ -19,6 +19,8 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
         #endregion Constructors
 
         #region Properties
+
+        public override InventoryId EntityId { get; }
 
         public int Qty { get; set; }
 
@@ -30,6 +32,7 @@ namespace DDDTW.CoffeeShop.Inventories.Domain.Inventories.DomainEvents
 
         protected override IEnumerable<object> GetDerivedEventEqualityComponents()
         {
+            yield return this.EntityId;
             yield return this.Qty;
             yield return this.Item;
             foreach (var constraint in this.Constraints)

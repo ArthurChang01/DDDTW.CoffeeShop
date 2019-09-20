@@ -9,14 +9,14 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
 
         public OrderItem()
         {
-            this.Product = new Product();
+            this.ProductId = string.Empty;
             this.Qty = 0;
             this.Price = 0;
         }
 
-        public OrderItem(Product product, int qty, decimal prices)
+        public OrderItem(string productId, int qty, decimal prices)
         {
-            this.Product = product;
+            this.ProductId = productId;
             this.Qty = qty;
             this.Price = prices;
         }
@@ -25,7 +25,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
 
         #region Properties
 
-        public Product Product { get; private set; }
+        public string ProductId { get; private set; }
 
         public int Qty { get; private set; }
 
@@ -37,7 +37,7 @@ namespace DDDTW.CoffeeShop.Orders.Domain.Orders.Models
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
-            yield return this.Product;
+            yield return this.ProductId;
             yield return this.Qty;
             yield return this.Price;
         }

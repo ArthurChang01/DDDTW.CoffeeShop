@@ -10,11 +10,11 @@ namespace DDDTW.CoffeeShop.CommonLib.BaseClasses
 
         public TId Id { get; protected set; }
 
-        protected readonly List<IDomainEvent> domainEvents = new List<IDomainEvent>();
+        protected readonly List<IDomainEvent<TId>> domainEvents = new List<IDomainEvent<TId>>();
 
-        public IReadOnlyCollection<IDomainEvent> DomainEvents => this.domainEvents;
+        public IReadOnlyCollection<IDomainEvent<TId>> DomainEvents => this.domainEvents;
 
-        protected void ApplyEvent(IDomainEvent @event)
+        protected void ApplyEvent(IDomainEvent<TId> @event)
         {
             if (suppressEvent) return;
 
